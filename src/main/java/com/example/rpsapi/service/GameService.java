@@ -1,100 +1,98 @@
 package com.example.rpsapi.service;
 
-import com.example.rpsapi.api.model.dto.PlayerDTO;
-import com.example.rpsapi.api.model.dto.RPSGameDTO;
+import com.example.rpsapi.api.model.dto.MoveRequest;
+import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
 import com.example.rpsapi.api.model.entities.RPSGame;
 import com.example.rpsapi.api.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
+// TODO -> GameRepository -> SHOULD BE THREAD SAFE --> Field not modified after construction + ConcurrentHashmap + AtomicInteger(Change to UUID)
+// TODO -> GameService Interface + GameServiceImpl???
 @Service
 public class GameService {
 
-    private GameRepository gameRepository;
-    private MessageService messageService;
+    private final GameRepository gameRepository;
+    private final MessageService messageService;
 
     public GameService(GameRepository gameRepository, MessageService messageService) {
         this.gameRepository = gameRepository;
         this.messageService = messageService;
     }
 
-    public int createGame(PlayerDTO playerDTO) {
-        Player player1 = new Player(playerDTO.name());
-        RPSGame game = new RPSGame(player1);
-        int id = gameRepository.addGame(game); // addGame() returns int -> id
-        game.setId(id);
-        return id;
+    public String createGame(Player player) {
+        RPSGame game = new RPSGame(player);
+        gameRepository.addGame(game);
+        return game.getGameID();
     }
 
-    public RPSGameDTO getGameState(int id) {
-        // todo -> return error if game does not exist
-        RPSGame rpsGame = gameRepository.getGame(id);
-        return convertToGameDTO(rpsGame);
+    public RPSGame getGameState(String gameId) {
+        return gameRepository.getGame(gameId);
     }
 
-    // todo -> rename
-    private RPSGameDTO convertToGameDTO(RPSGame rpsGame) {
-        // todo -> Get values of RPSGame and put in Map -> return Map
-
-        if (rpsGame == null) {
-            throw new NullPointerException("Game does not exist");
-        }
-
-        String id = String.valueOf(rpsGame.getId());
-
-        String player1 = rpsGame.getPlayer1().getName();
-        String player2;
-
-        if (rpsGame.getPlayer2() != null) {
-            player2 = rpsGame.getPlayer2().getName();
-        }
-        else {
-            player2 = messageService.getMessage("no_player_2");
-        }
-
-        return new RPSGameDTO(id, player1, player2);
-    }
-
-    // todo -> Requirements !state return value
-    public RPSGameDTO joinGame(int id, PlayerDTO player2DTO) {
-        // todo -> return error if game does not exist
-        // todo -> return error if player2 already exists
-        RPSGame rpsGame = gameRepository.getGame(id);
-        if (rpsGame != null) {
-            Player player2 = new Player(player2DTO.name());
-            rpsGame.setPlayer2(player2);
+    public RPSGame joinGame(String gameId, Player player) {
+        RPSGame rpsGame = gameRepository.getGame(gameId);
+        if (rpsGame != null && (!rpsGame.isGameActive() || !rpsGame.isGameFinished())) {
+            rpsGame.addPlayer(player);
             gameRepository.updateGame(rpsGame);
         }
 
-        return convertToGameDTO(rpsGame); // todo -> does it convert correctly?
+        return rpsGame;
     }
 
-    public RPSGameDTO makeMove(int id, PlayerDTO playerDTO) {
-        // TODO --> Vill behöva kolla så få grejer som möjligt
+    public String makeMove(String gameID, MoveRequest moveRequest) {
+        String playerID = moveRequest.playerID();
+        Move move = moveRequest.move();
 
-        // some logic
-        // chack if game exists
-        RPSGame rpsGame = gameRepository.getGame(id);
+        RPSGame rpsGame = gameRepository.getGame(gameID);
 
         if (rpsGame == null) {
             throw new NullPointerException("Game does not exist");
         }
 
-        // check if player exists in game
-        if (!rpsGame.hasPlayer(playerDTO.name())) {
-            throw new NullPointerException("Player does not exist in game");
+        if (!rpsGame.hasPlayer(playerID)) {
+            throw new IllegalStateException("Player is not in game"); // TODO -> JOIM GAME FIRST (PLAYER 2)
         }
 
-        // check if player has made a move
+        if (!rpsGame.isGameActive()) {
+            throw new IllegalStateException("Game is inactive"); // TODO -> PLAYER TWO MISSING (PLAYER 1)
+        }
 
+        if (rpsGame.isGameFinished()) {
+            throw new IllegalStateException("Game is finished"); // TODO -> GAME IS FINISHED
+        }
+        /*
+        if (rpsGame.hasBothPlayersMadeMove()) {
+            throw new IllegalStateException("Both players have already made a move"); // == GAME IS FINISHED
+        }*/
 
+        // TODO -> MessageService + MoveResponse
+        if (rpsGame.hasPlayer(playerID)) { // IF IN GAME
 
+            if (rpsGame.hasNoPlayerMadeMove()) { // IF NO PLAYER HAS MADE A MOVE
 
-        // check if both players have made a move
+                if (rpsGame.isPlayerOne(playerID)) { // IF PLAYER 1
+                    Player player = rpsGame.getPlayerBy(playerID); // FIRST MOVE
+                    player.setMove(move);
+                    return "PLAYER 1 MOVE MADE"; // todo -> return PLAYER 1 MOVE MADE
+                } else {
+                    return "NOT PLAYER 2 TURN"; // todo -> return NOT PLAYER 2 TURN
+                }
+            }
 
-        // pass back to repository with updated player move
-
-        return null;
+            if (rpsGame.isPlayerOne(playerID) && rpsGame.hasPlayerMadeMove(playerID)) {
+                return "NOT PLAYER 1 TURN"; // todo -> return NOT PLAYER 1 TURN
+            } else {
+                Player player = rpsGame.getPlayerBy(playerID); // SECOND MOVE
+                player.setMove(move);
+                rpsGame.setGameActive(false);
+                rpsGame.setGameFinished(true); // getWinner possible to call
+                rpsGame.setWinner();
+                return "PLAYER 2 MOVE MADE"; // todo -> return PLAYER 2 MOVE MADE
+            }
+        } else {
+            return "PLAYER NOT IN GAME"; // todo -> return PLAYER NOT IN GAME ******** Redan kollat ovan
+        }
     }
 
 

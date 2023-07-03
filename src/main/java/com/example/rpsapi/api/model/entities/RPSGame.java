@@ -1,49 +1,140 @@
 package com.example.rpsapi.api.model.entities;
 
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 // GAME SHOULD KEEP TRACK OF EVERYTHING THAT HAPPENS IN THE GAME
+
+// TODO -> NULL CHECKS EVERYWHERE?
 public class RPSGame {
 
-    private int id;
-    // todo -> should be a list of players -> List<Player> players = new ArrayList<>();
-    private Player player1;
-    private Player player2;
+    private static final int MAX_PLAYERS = 2;
+    private static final int PLAYER_NUMBER_ONE = 1;
+    private static final int PLAYER_NUMBER_TWO = 2;
+    private String playerOneName;
+    private String playerTwoName;
+    private String playerOnePlayerID;
+    private String playerTwoPlayerID;
+    private final String gameId;
+    private boolean isGameActive;
+    private boolean isGameFinished;
+    private String winner;
+    private final ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<>();
 
-    // todo -> create AL and add players to it
-    public RPSGame(Player player1) {
-        this.player1 = player1;
+    public RPSGame(Player player) {
+        this.gameId = UUID.randomUUID().toString();
+        addPlayer(player);
     }
 
-    // todo -> Maybe the RPSGame -> Create id?
-    public void setId(int id) {
-        this.id = id;
+    public String getGameID() {
+        return gameId;
     }
 
-    // todo -> getPlayer(name) instead of this?
-    public Player getPlayer1() {
-        return player1;
+    public void addPlayer(Player player) {
+        if (players.isEmpty()) {
+            player.setPlayerNumber(PLAYER_NUMBER_ONE);
+            players.put(player.getPlayerID(), player);
+            playerOneName = player.getName();
+            playerOnePlayerID = player.getPlayerID();
+        } else if (players.size() <= MAX_PLAYERS) {
+            player.setPlayerNumber(PLAYER_NUMBER_TWO);
+            players.put(player.getPlayerID(), player);
+            playerTwoName = player.getName();
+            playerTwoPlayerID = player.getPlayerID();
+            setGameActive(true);
+        }
     }
 
-    // todo -> getPlayer(name) instead of this?
-    public Player getPlayer2() {
-        return player2;
+    public String getPlayerOneName() {
+        return playerOneName;
     }
 
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
+    public String getPlayerTwoName() {
+        return playerTwoName;
     }
 
-    public int getId() {
-        // todo -> unsafe since the id might not be set
-        return id;
+    public String getPlayerOnePlayerID() {
+        return playerOnePlayerID;
     }
 
-    // todo -> is game full? Better bc can be extended to more than 2 players
-    public boolean hasPlayer2Joined() {
-        return player2 != null;
+    public String getPlayerTwoPlayerID() {
+        return playerTwoPlayerID;
     }
 
-    public boolean hasPlayer(String name) {
-        // todo -> what if they have the same name?
-        return player1.getName().equals(name) || player2.getName().equals(name);
+    public boolean isGameActive() {
+        return isGameActive;
     }
+
+    public void setGameActive(boolean isGameActive) {
+        this.isGameActive = isGameActive;
+    }
+
+    public boolean isGameFinished() {
+        return isGameFinished;
+    }
+
+    public void setGameFinished(boolean isGameFinished) {
+        this.isGameFinished = isGameFinished;
+    }
+
+    public Player getPlayerBy(String playerID) {
+        return players.get(playerID);
+    }
+
+    public boolean hasPlayer(String playerID) {
+        return players.containsKey(playerID);
+    }
+
+    public boolean isPlayerOne(String playerID) {
+        return players.get(playerID).getPlayerNumber() == PLAYER_NUMBER_ONE;
+    }
+
+    public boolean hasPlayerMadeMove(String playerID) {
+        return players.get(playerID).hasMove();
+    }
+
+    public boolean hasBothPlayersMadeMove() {
+        return players.values().stream().allMatch(Player::hasMove);
+    }
+
+    public boolean hasNoPlayerMadeMove() {
+        return players.values().stream().noneMatch(Player::hasMove);
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner() {
+        if (!isGameFinished) {
+            throw new IllegalStateException("The game has not finished yet. The winner cannot be determined.");
+        }
+
+        Player playerOne = null;
+        Player playerTwo = null;
+
+        for (Player player : players.values()) {
+            if (player.getPlayerNumber() == 1) {
+                playerOne = player;
+            } else if (player.getPlayerNumber() == 2) {
+                playerTwo = player;
+            }
+        }
+
+        // todo -> USE ASSERTIONS?
+        if (playerOne == null || playerTwo == null) {
+            throw new IllegalStateException("The game does not have two players. The winner cannot be determined.");
+        }
+
+        Move.Result result = playerOne.getMove().against(playerTwo.getMove());
+
+        switch (result) {
+            case WIN -> winner = playerOne.getPlayerID();
+            case LOSE -> winner = playerTwo.getPlayerID();
+            case DRAW -> winner = "DRAW";
+        }
+    }
+
+    // get game state
+
 }

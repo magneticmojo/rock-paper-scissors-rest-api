@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
+// todo -> NOT THREAD SAFE I BELIEVE
 @Service
 public class MessageService {
 

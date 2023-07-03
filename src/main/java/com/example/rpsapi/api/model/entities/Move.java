@@ -42,9 +42,9 @@ public enum Move {
     public Result against(Move move) {
         if (this == move) {
             return Result.DRAW;
-        } else if (move == getLosesAgainst()) {
+        } else if (move == getWinsAgainst()) { // Here's the corrected line
             return Result.WIN;
-        } else if (move == getWinsAgainst()) {
+        } else if (move == getLosesAgainst()) {
             return Result.LOSE;
         } else {
             throw new IllegalArgumentException();
