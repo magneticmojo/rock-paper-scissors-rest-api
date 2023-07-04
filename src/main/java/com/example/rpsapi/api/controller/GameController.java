@@ -1,78 +1,65 @@
 package com.example.rpsapi.api.controller;
 
+import com.example.rpsapi.api.model.dto.CreateGameRequest;
 import com.example.rpsapi.api.model.dto.MoveRequest;
-//import com.example.rpsapi.api.model.entities.Move;
-//import com.example.rpsapi.api.model.dto.PlayerDTO;
-//import com.example.rpsapi.api.model.dto.RPSGameDTO;
 import com.example.rpsapi.api.model.entities.Player;
 import com.example.rpsapi.api.model.entities.RPSGame;
+import com.example.rpsapi.api.state.GameState;
 import com.example.rpsapi.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
-// Thread-safety
-// TODO --> Spring MVC not inherently thread-safe ==> @Scope("request") ==> new instance for each request ANS:(DONT SOLVE ISSUE AS SHARED STATE IS OUTSIDE THE CONTROLLER)
-// TODO --> Avoid using class varibles ==> Use method variables instead
-// TODO --> LOCAL VARIABLES ARE THREAD-SAFE --> BUT NO DEPENDENCY INJECTION --> HARD TO TEST
-// TODO --> Concurrency == Problem with only 2 clients?
-// TODO --> ThreadLocal??? ThreadLocalRandom??
-// http://dolszewski.com/spring/spring-bean-thread-safety-guide/
-
-// Client input:
-// TODO -->
-// TODO -> Fråga MAX: Inget problerm att avslöja inter entitet???
-// Another advantage of using DTOs on RESTful APIs written in Java (and on Spring Boot),
-// is that they can help to hide implementation details of domain objects (JPA entities).
-// Exposing entities through endpoints can become
-// a security issue if we do not carefully handle
-// what properties can be changed through what operations.
-
-
-// TODO -> ENDPONTS
-// TODO -> Return links to other endpoints? HATEOAS --> YES + Include in API Documentation
-
+// TODO ==> VAD SKICKAS TILLBAKA?
+// TODO ==> LÄGG TILL INPUT VALIDERING
+// TODO ==> FIXA DTOS???
+// TODO ==> FIXA ENUM KLASSEN
+// TODO ==> FIXA TESTER
+// TODO ==> Minimera error-handling
+// TODO ==> Fixa kommentarer
+// TODO ==> Fixa README
+// TODO ==> INSTRUKTIONER
+// TODO ==> JAVADOC?????
 @RestController
-@RequestMapping("/api/games")
+@RequestMapping("/api/games") // todo -> Är detta samma som för create game??
 public class GameController {
 
     private final GameService gameService;
 
-    // DI ==> Spring manage service lifetime and auto-inject its dependencies
     public GameController(GameService gameService) {
         this.gameService = gameService;
     }
 
-    // TODO --> Se till att det är så svårt som möjligt att göra fel ==> Minimera error-handling
-
-    //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<Map<String, String>> createGame(@RequestBody Player player) {
-        String gameID = gameService.createGame(player);
+    public ResponseEntity<String> createGame(@RequestBody Player player) { // todo -> CreateGameDTO?
 
-        // todo -> return playerId
-        Map<String, String> response = Map.of("gameID", gameID); // Creates an immutable map
-        return ResponseEntity.ok(response);
+        String id = gameService.createGame(player);
+
+        // todo -> vad ska returneras här??
+
+        return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/{gameID}")
-    public ResponseEntity<RPSGame> getGameState(@PathVariable String gameID) {
-        RPSGame rpsGame = gameService.getGameState(gameID);
+    @GetMapping("/{id}")
+    public ResponseEntity<GameState> getGameState(@PathVariable String id) {
 
-        return ResponseEntity.ok(rpsGame);
+        GameState gameState = gameService.getGameState(id);
+        // todo -> vad ska returneras här??
+        return ResponseEntity.ok(gameState);
     }
 
-    @PatchMapping("/{gameId}/join")
-    public ResponseEntity<RPSGame> joinGame(@PathVariable String gameId, @RequestBody Player player) {
-        RPSGame rpsGame = gameService.joinGame(gameId, player);
-        return ResponseEntity.ok(rpsGame);
+    @PatchMapping("/{id}/join")
+    public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody Player player) { // todo -> ta join request istället för player
+
+        GameState gameState = gameService.joinGame(id, player); // todo -> void?
+
+        // todo -> vad ska returneras här??
+        return ResponseEntity.ok(gameState);
     }
 
-    // todo @params gameId, @RequestBody playerID, move
-    @PatchMapping("/{gameID}/move")
-    public String makeMove(@PathVariable String gameID, @RequestBody MoveRequest moveRequest) { // Spring binds JSON to DTO
-        String playerMessage = gameService.makeMove(gameID, moveRequest);
-        return ResponseEntity.ok(playerMessage).toString(); // TODO return MoveResponse DTO instead
+    @PatchMapping("/{id}/move")
+    public ResponseEntity<GameState> makeMove(@PathVariable String id, @RequestBody MoveRequest moveRequest) {
+        GameState gameState = gameService.makeMove(id, moveRequest);
+        // todo -> vad ska returneras här??
+        return ResponseEntity.ok(gameState); // TODO return MoveResponse DTO instead
     }
 }

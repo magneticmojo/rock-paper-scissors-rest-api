@@ -1,5 +1,6 @@
 package com.example.rpsapi.api.model.entities;
 
+// TODO -> HÖGRE ÄN TIDIGARE + LÄGG I ORDNING
 public enum Move {
     ROCK {
         @Override
@@ -42,7 +43,7 @@ public enum Move {
     public Result against(Move move) {
         if (this == move) {
             return Result.DRAW;
-        } else if (move == getWinsAgainst()) { // Here's the corrected line
+        } else if (move == getWinsAgainst()) {
             return Result.WIN;
         } else if (move == getLosesAgainst()) {
             return Result.LOSE;

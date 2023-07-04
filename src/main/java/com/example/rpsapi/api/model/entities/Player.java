@@ -1,25 +1,15 @@
 package com.example.rpsapi.api.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.UUID;
+// TODO -> IMPLEMENT EQUALS AND HASHCODE AND TOSTRING???
+// TODO -> ANootations for validation + CLASS
 
 public class Player {
 
-    private final String playerID;
     private String name;
     private Move move;
-    private int playerNumber;
 
-    @JsonCreator
-    public Player(@JsonProperty("name") String name) {
-        this.playerID = UUID.randomUUID().toString();
+    public Player(String name) {
         this.name = name;
-    }
-
-    public String getPlayerID() {
-        return playerID;
     }
 
     public String getName() {
@@ -42,13 +32,4 @@ public class Player {
         return move != null;
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
-    }
-
-    public void setPlayerNumber(int playerNumber) {
-        this.playerNumber = playerNumber;
-    }
-
-    // TODO -> IMPLEMENT EQUALS AND HASHCODE AND TOSTRING???
 }
