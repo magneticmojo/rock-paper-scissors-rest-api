@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 // TODO ==> LÄGG TILL INPUT VALIDERING
 // TODO ==> FIXA DTOS???
 // TODO ==> FIXA ENUM KLASSEN
+// TODO ==> HANTERA INPUT ENUM
 // TODO ==> FIXA TESTER
 // TODO ==> Minimera error-handling
+// TODO ==> SPRING BOOT ANNOTATIONER
 // TODO ==> Fixa kommentarer
 // TODO ==> Fixa README
 // TODO ==> INSTRUKTIONER

@@ -1,5 +1,8 @@
 package com.example.rpsapi.api.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 // TODO -> IMPLEMENT EQUALS AND HASHCODE AND TOSTRING???
 // TODO -> ANootations for validation + CLASS
 
@@ -8,7 +11,9 @@ public class Player {
     private String name;
     private Move move;
 
-    public Player(String name) {
+    // TODO --> UTAN ==> Bad REQUEST
+    @JsonCreator
+    public Player(@JsonProperty("name") String name) {
         this.name = name;
     }
 
