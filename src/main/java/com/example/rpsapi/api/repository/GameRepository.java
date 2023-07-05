@@ -1,6 +1,6 @@
 package com.example.rpsapi.api.repository;
 
-import com.example.rpsapi.api.model.entities.RPSGame;
+import com.example.rpsapi.api.model.entities.RockPaperScissorsGame;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,17 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class GameRepository {
 
-    private final ConcurrentHashMap<String, RPSGame> gameMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, RockPaperScissorsGame> gameMap = new ConcurrentHashMap<>();
 
-    public void addGame(RPSGame game) {
+    public void addGame(RockPaperScissorsGame game) {
         gameMap.put(game.getGameID(), game); // thread-safe
     }
 
-    public RPSGame getGame(String id) {
+    public RockPaperScissorsGame getGame(String id) {
         return gameMap.get(id);
     }
 
-    public void updateGame(RPSGame game) {
+    public void updateGame(RockPaperScissorsGame game) {
         gameMap.put(game.getGameID(), game);
     }
 

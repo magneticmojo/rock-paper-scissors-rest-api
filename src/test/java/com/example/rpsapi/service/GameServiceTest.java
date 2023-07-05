@@ -4,7 +4,7 @@ package com.example.rpsapi.service;
 import com.example.rpsapi.api.model.dto.MoveRequest;
 import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
-import com.example.rpsapi.api.model.entities.RPSGame;
+import com.example.rpsapi.api.model.entities.RockPaperScissorsGame;
 import com.example.rpsapi.api.repository.GameRepository;
 import com.example.rpsapi.api.state.GameActiveState;
 import com.example.rpsapi.api.state.GameState;
@@ -32,9 +32,9 @@ public class GameServiceTest {
 */
 /*    @Test
     public void testCreateGame() {
-        RPSGame game = new RPSGame(player);
+        RockPaperScissorsGame game = new RockPaperScissorsGame(player);
 
-        doNothing().when(gameRepository).addGame(any(RPSGame.class));
+        doNothing().when(gameRepository).addGame(any(RockPaperScissorsGame.class));
 
         String gameId = gameService.createGame(player);
 
@@ -45,7 +45,7 @@ public class GameServiceTest {
     @Test
     public void testGetGameState() {
         String gameId = "game1";
-        RPSGame game = new RPSGame(player);
+        RockPaperScissorsGame game = new RockPaperScissorsGame(player);
         GameState gameState = new GameActiveState(game);
         game.setState(gameState);
         when(gameRepository.getGame(gameId)).thenReturn(game);
@@ -58,10 +58,10 @@ public class GameServiceTest {
     @Test
     public void testJoinGame() {
         String gameId = "game1";
-        RPSGame game = new RPSGame(player);
+        RockPaperScissorsGame game = new RockPaperScissorsGame(player);
         when(gameRepository.getGame(gameId)).thenReturn(game);
 
-        RPSGame result = gameService.joinGame(gameId, player);
+        RockPaperScissorsGame result = gameService.joinGame(gameId, player);
 
         assertEquals(game, result);
     }

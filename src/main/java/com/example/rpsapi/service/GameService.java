@@ -4,7 +4,7 @@ import com.example.rpsapi.api.exception.GameNotFoundException;
 import com.example.rpsapi.api.model.dto.MoveRequest;
 import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
-import com.example.rpsapi.api.model.entities.RPSGame;
+import com.example.rpsapi.api.model.entities.RockPaperScissorsGame;
 import com.example.rpsapi.api.repository.GameRepository;
 import com.example.rpsapi.api.state.GameState;
 import org.springframework.stereotype.Service;
@@ -31,28 +31,27 @@ public class GameService {
             throw new IllegalArgumentException("Player move not permitted. Missing player two");
         }
 
-        RPSGame game = new RPSGame(player); // Sets State GameCreatedState
+        RockPaperScissorsGame game = new RockPaperScissorsGame(player);
         gameRepository.addGame(game);
-        return game.getGameID();
+        return game.getGameID(); // todo -> ToString || ToJson || UUID
     }
 
-    private boolean isInValidPlayerInput(Player player) {
+    private boolean isInValidPlayerInput(Player player) { // todo -> Bad naming
         // todo -> hasMove
         return player == null || player.getName() == null || player.getName().isBlank(); // todo -> isEMpty()?
     }
 
     // GET /api/games/{id}
     public GameState getGameState(String id) {
-        RPSGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGame(id);
         System.out.println(rpsGame.getState());
         return rpsGame.getState();
-
     }
 
     // PATCH /api/games/{gameId}/join
     public GameState joinGame(String id, Player playerTwo) {
 
-        RPSGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGame(id);
 
         if (isInValidPlayerInput(playerTwo)) { // todo -> DUPLICATION
             throw new IllegalArgumentException("Player not valid");
@@ -65,12 +64,12 @@ public class GameService {
         return rpsGame.joinGame(playerTwo);
     }
 
-    private RPSGame getGame(String id) throws IllegalArgumentException, GameNotFoundException { // todo -> BAD NAMING
+    private RockPaperScissorsGame getGame(String id) throws IllegalArgumentException, GameNotFoundException { // todo -> BAD NAMING
         if (isInvalidGameID(id)) {
             throw new IllegalArgumentException("Game ID invalid");
         }
 
-        RPSGame rpsGame = gameRepository.getGame(id);
+        RockPaperScissorsGame rpsGame = gameRepository.getGame(id);
 
         if (rpsGame == null) {
             throw new GameNotFoundException("Game does not exist");
@@ -85,7 +84,7 @@ public class GameService {
     // PATCH /api/games/{id}/move
     public GameState makeMove(String id, MoveRequest moveRequest) {
 
-        RPSGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGame(id);
 
         // todo --> null control
         String playerName = moveRequest.playerName();

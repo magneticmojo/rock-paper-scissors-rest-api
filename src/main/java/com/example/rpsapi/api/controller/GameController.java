@@ -1,13 +1,14 @@
 package com.example.rpsapi.api.controller;
 
-import com.example.rpsapi.api.model.dto.CreateGameRequest;
 import com.example.rpsapi.api.model.dto.MoveRequest;
 import com.example.rpsapi.api.model.entities.Player;
-import com.example.rpsapi.api.model.entities.RPSGame;
 import com.example.rpsapi.api.state.GameState;
 import com.example.rpsapi.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
+// JACKSON  Läs
 
 // TODO ==> VAD SKICKAS TILLBAKA?
 // TODO ==> LÄGG TILL INPUT VALIDERING

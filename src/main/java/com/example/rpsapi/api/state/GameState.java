@@ -13,7 +13,7 @@ public interface GameState { // TODO -> REMOVE RETURN TYPE FROM METHODS?
 Request: POST /api/games
 Server operations:
 Create playerOne from JSON request body input "name".
-Create an instance of RPSGame which gets assigned a UUID in the constructor.
+Create an instance of RockPaperScissorsGame which gets assigned a UUID in the constructor.
 Set game state to GameCreatedState.
 Return the "id" for the game (corresponding to the generated UUID)
 
@@ -22,7 +22,7 @@ Transition: No transition (because game was just created)
 
 GET /api/games/{id}
 Server operations:
-Fetch RPSGame instance based on the JSON request body input "id".
+Fetch RockPaperScissorsGame instance based on the JSON request body input "id".
 Return game state with information about the game instance.
 
 State: GameCreatedState (if no other request than POST has been made)
