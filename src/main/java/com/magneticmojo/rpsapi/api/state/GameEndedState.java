@@ -1,6 +1,7 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.magneticmojo.rpsapi.api.exception.GameEndedException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.GameEndedStateSerializer;
@@ -14,11 +15,11 @@ public record GameEndedState(Player playerOne,
 
     @Override
     public GameState joinGame(Player player) {
-        throw new IllegalStateException("Game ended. Cannot join game");
+        throw new GameEndedException("Game ended. Cannot join game");
     }
 
     @Override
     public GameState makeMove(PlayerMove playerMove) {
-        throw new IllegalStateException("Game ended. Cannot make move");
+        throw new GameEndedException("Game ended. Cannot make move");
     }
 }

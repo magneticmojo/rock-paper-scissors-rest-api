@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.magneticmojo.rpsapi.api.state.GameActiveState;
 
-// TODO HANDLE IOEXCEPTION
 import java.io.IOException;
 
 public class GameActiveStateSerializer extends StdSerializer<GameActiveState> { // TODO @TEST

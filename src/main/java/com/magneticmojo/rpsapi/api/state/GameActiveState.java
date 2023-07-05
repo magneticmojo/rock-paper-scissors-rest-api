@@ -1,6 +1,8 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.magneticmojo.rpsapi.api.exception.MaxPlayerLimitReachedException;
+import com.magneticmojo.rpsapi.api.exception.PlayerException;
 import com.magneticmojo.rpsapi.api.model.entities.Move;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
@@ -16,18 +18,18 @@ public record GameActiveState(Player playerOne,
 
     @Override
     public GameState joinGame(Player player) {
-        throw new IllegalStateException("Game full. Cannot join game");
+        throw new MaxPlayerLimitReachedException("Game full. Cannot join game");
     }
 
     @Override
     public GameState makeMove(PlayerMove lastPlayerMove) { // TODO -> SÄKERSTÄLL EDGE CASES
 
         if (playerNotInGame(lastPlayerMove.player().name())) {
-            throw new IllegalStateException("Player not in game. Cannot make move");
+            throw new PlayerException("Player not in game. Cannot make move");
         }
 
         if (playerHasMadeMove(lastPlayerMove)) {
-            throw new IllegalStateException("Player already made move. Cannot make move");
+            throw new PlayerException("Player already made move. Cannot make move");
         }
 
         return new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove, getResult(firstPlayerMove, lastPlayerMove));

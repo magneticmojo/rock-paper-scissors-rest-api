@@ -41,10 +41,8 @@ public class GameController { // TODO @TEST
         return ResponseEntity.ok(gameState);
     }
 
-    // todo -> @Validated? @NotBlank Handling?
     @PatchMapping("/{id}/join")
     public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody @Validated Player player) {
-        // FÅnga rätt undantag med ErrorHandler
         GameState gameState = gameService.joinGame(id, player);
         return ResponseEntity.ok(gameState);
     }

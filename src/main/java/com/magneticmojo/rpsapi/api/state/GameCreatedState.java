@@ -1,6 +1,7 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.magneticmojo.rpsapi.api.exception.MoveProhibitedMissingPlayerException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.GameCreatedStateSerializer;
@@ -30,6 +31,6 @@ public record GameCreatedState(Player playerOne) implements GameState {
 
     @Override
     public GameState makeMove(PlayerMove playerMove) {
-        throw new IllegalStateException("Game not full. Cannot make move");
+        throw new MoveProhibitedMissingPlayerException("MISSING PLAYER. MOVE PROHIBITED.");
     }
 }
