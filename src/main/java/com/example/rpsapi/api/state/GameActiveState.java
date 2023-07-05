@@ -2,25 +2,14 @@ package com.example.rpsapi.api.state;
 
 import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
+import com.example.rpsapi.api.model.entities.PlayerMove;
 
-// TODO -> MAKE RECORD???
-public class GameActiveState implements GameState {
+public record GameActiveState(Player playerOne,
+                              Player playerTwo,
+                              PlayerMove firstPlayerMove) implements GameState {
 
-    private final Player playerOne;
-    private final Player playerTwo;
-
-    public GameActiveState(Player playerOne, Player playerTwo) {
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-    }
-
-    public Player getPlayerOne() {
-        return playerOne;
-    }
-
-    public Player getPlayerTwo() {
-        return playerTwo;
-    }
+    private static final int FIRST_MOVE_WINS_CONDITION = 1; // TODO BAD NAMING
+    private static final int LAST_MOVE_WINS_CONDITION = 2;
 
     @Override
     public GameState joinGame(Player player) {
@@ -28,50 +17,46 @@ public class GameActiveState implements GameState {
     }
 
     @Override
-    public GameState makeMove(String playerName, Move secondMove) {
+    public GameState makeMove(PlayerMove lastPlayerMove) { // TODO -> SÄKERSTÄLL EDGE CASES
 
-        if (playerNotInGame(playerName)) {
+        if (playerNotInGame(lastPlayerMove.player().name())) {
             throw new IllegalStateException("Player not in game. Cannot make move");
         }
 
-        // TODO --> Edge cases
-        // name = playerOne && playerOne.hasMove() --> throw exception
-        // name = playerTwo && playerTwo.hasMove() --> throw exception
-
-        if (!playerOne.hasMove() && playerName.equals(playerOne.getName())) {
-            playerOne.setMove(secondMove);
-        } else if (!playerTwo.hasMove() && playerName.equals(playerTwo.getName())) {
-            playerTwo.setMove(secondMove);
-        } else {
+        if (playerHasMadeMove(lastPlayerMove)) {
             throw new IllegalStateException("Player already made move. Cannot make move");
         }
 
-        return new GameEndedState(playerOne, playerTwo, getResult());
+        return new GameEndedState(playerOne, playerTwo, getResult(firstPlayerMove, lastPlayerMove));
     }
 
     private boolean playerNotInGame(String playerName) {
-        return !playerOne.getName().equals(playerName) && !playerTwo.getName().equals(playerName);
+        return !playerOne.name().equals(playerName) && !playerTwo.name().equals(playerName);
     }
 
-    // TODO --> Fix ENUM + CALCULATION
-    private String getResult() {
-        Move.Result result = playerOne.getMove().against(playerTwo.getMove());
+    private boolean playerHasMadeMove(PlayerMove lastPlayerMove) {
+        return lastPlayerMove.player().name().equals(firstPlayerMove.player().name());
+    }
 
-        String winner = "";
+    public String getResult(PlayerMove firstPlayerMove, PlayerMove lastPlayerMove) {
+        Player firstMovePlayer = firstPlayerMove.player();
+        Player lastMovePlayer = lastPlayerMove.player();
+        Move firstMove = firstPlayerMove.move();
+        Move lastMove = lastPlayerMove.move();
 
-        switch (result) {
-            case WIN -> winner = playerOne.getName();
-            case LOSE -> winner = playerTwo.getName();
-            case DRAW -> winner = "DRAW";
+        int relativePosition = calculateCyclicEnumRelation(firstMove, lastMove);
+
+        if (relativePosition == FIRST_MOVE_WINS_CONDITION) {
+            return firstMovePlayer.name() + " WINS BY " + firstMove.name() + " BEATING " + lastMove.name();
+        } else if (relativePosition == LAST_MOVE_WINS_CONDITION) {
+            return lastMovePlayer.name() + " WINS BY " + lastMove.name() + " BEATING " + firstMove.name();
+        } else {
+            return "TIE";
         }
-        return winner;
     }
 
-    @Override
-    public String toString() {
-        return "GameActiveState{" +
-                "playerOne=" + playerOne +
-                ", playerTwo=" + playerTwo +
-                '}';
+    private int calculateCyclicEnumRelation(Move firstMove, Move lastMove) { // todo -> BAD NAMING
+        int numberOfPossibleMoves = Move.values().length;
+        return (numberOfPossibleMoves + firstMove.ordinal() - lastMove.ordinal()) % numberOfPossibleMoves;
     }
 }

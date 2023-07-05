@@ -1,32 +1,11 @@
 package com.example.rpsapi.api.state;
 
-import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
+import com.example.rpsapi.api.model.entities.PlayerMove;
 
-// TODO -> MAKE RECORD???
-public class GameEndedState implements GameState {
-
-    private final Player playerOne;
-    private final Player playerTwo;
-    private final String result;
-
-    public GameEndedState(Player playerOne, Player playerTwo, String result) {
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-        this.result = result;
-    }
-
-    public Player getPlayerOne() {
-        return playerOne;
-    }
-
-    public Player getPlayerTwo() {
-        return playerTwo;
-    }
-
-    public String getResult() {
-        return result;
-    }
+public record GameEndedState(Player playerOne,
+                             Player playerTwo,
+                             String result) implements GameState {
 
     @Override
     public GameState joinGame(Player player) {
@@ -34,16 +13,7 @@ public class GameEndedState implements GameState {
     }
 
     @Override
-    public GameState makeMove(String playerName, Move move) {
+    public GameState makeMove(PlayerMove playerMove) {
         throw new IllegalStateException("Game ended. Cannot make move");
-    }
-
-    @Override
-    public String toString() {
-        return "GameEndedState{" +
-                "playerOne=" + playerOne +
-                ", playerTwo=" + playerTwo +
-                ", result='" + result + '\'' +
-                '}';
     }
 }

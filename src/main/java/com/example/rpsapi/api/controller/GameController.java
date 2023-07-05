@@ -1,11 +1,16 @@
 package com.example.rpsapi.api.controller;
 
-import com.example.rpsapi.api.model.dto.MoveRequest;
 import com.example.rpsapi.api.model.entities.Player;
+import com.example.rpsapi.api.model.entities.PlayerMove;
 import com.example.rpsapi.api.state.GameState;
 import com.example.rpsapi.service.GameService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 
 // JACKSON  Läs
@@ -33,7 +38,7 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createGame(@RequestBody Player player) { // todo -> CreateGameDTO?
+    public ResponseEntity<String> createGame(@RequestBody @Validated Player player) {
 
         String id = gameService.createGame(player);
 
@@ -45,24 +50,40 @@ public class GameController {
     @GetMapping("/{id}")
     public ResponseEntity<GameState> getGameState(@PathVariable String id) {
 
+        if (isInvalidIDFormat(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid id format");
+        }
+
         GameState gameState = gameService.getGameState(id);
         // todo -> vad ska returneras här??
         return ResponseEntity.ok(gameState);
     }
 
-    @PatchMapping("/{id}/join")
-    public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody Player player) { // todo -> ta join request istället för player
+    private boolean isInvalidIDFormat(String id) {
+        if (id == null) {
+            return true;
+        }
+        try {
+            UUID.fromString(id); // todo -> THROW IF CAN'T CREATE -> UGLY SOLUTION???
+            return false;
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+    }
 
-        GameState gameState = gameService.joinGame(id, player); // todo -> void?
+    @PatchMapping("/{id}/join")
+    public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody @Validated Player player) { // todo -> @Validated? @NotBlank Handling
+
+        GameState gameState = gameService.joinGame(id, player);
 
         // todo -> vad ska returneras här??
         return ResponseEntity.ok(gameState);
     }
 
     @PatchMapping("/{id}/move")
-    public ResponseEntity<GameState> makeMove(@PathVariable String id, @RequestBody MoveRequest moveRequest) {
-        GameState gameState = gameService.makeMove(id, moveRequest);
+    public ResponseEntity<GameState> makeMove(@PathVariable String id, @RequestBody @Validated PlayerMove playerMove) {
+        GameState gameState = gameService.makeMove(id, playerMove);
         // todo -> vad ska returneras här??
-        return ResponseEntity.ok(gameState); // TODO return MoveResponse DTO instead
+        return ResponseEntity.ok(gameState);
     }
 }

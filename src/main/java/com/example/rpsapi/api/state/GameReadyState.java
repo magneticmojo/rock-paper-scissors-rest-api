@@ -1,26 +1,11 @@
 package com.example.rpsapi.api.state;
 
-import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
+import com.example.rpsapi.api.model.entities.PlayerMove;
 
-// TODO -> MAKE RECORD???
-public class GameReadyState implements GameState {
-
-    private final Player playerOne;
-    private final Player playerTwo;
-
-    public GameReadyState(Player playerOne, Player playerTwo) {
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-    }
-
-    public Player getPlayerOne() {
-        return playerOne;
-    }
-
-    public Player getPlayerTwo() {
-        return playerTwo;
-    }
+// TODO -> RECORD WEAKENS ENCAPSULATION - BUT BOILERPLATE CODE IS REDUCED
+public record GameReadyState(Player playerOne,
+                             Player playerTwo) implements GameState {
 
     @Override
     public GameState joinGame(Player player) {
@@ -28,30 +13,16 @@ public class GameReadyState implements GameState {
     }
 
     @Override
-    public GameState makeMove(String playerName, Move firstMove) {
+    public GameState makeMove(PlayerMove firstPlayerMove) {
 
-        if (playerNotInGame(playerName)) {
+        if (playerNotInGame(firstPlayerMove.player().name())) {
             throw new IllegalStateException("Player not in game. Cannot make move");
         }
 
-        if (playerOne.getName().equals(playerName)) {
-            playerOne.setMove(firstMove);
-        } else {
-            playerTwo.setMove(firstMove);
-        }
-
-        return new GameActiveState(playerOne, playerTwo);
+        return new GameActiveState(playerOne, playerTwo, firstPlayerMove);
     }
 
     private boolean playerNotInGame(String playerName) {
-        return !playerOne.getName().equals(playerName) && !playerTwo.getName().equals(playerName);
-    }
-
-    @Override
-    public String toString() {
-        return "GameReadyState{" +
-                "playerOne=" + playerOne +
-                ", playerTwo=" + playerTwo +
-                '}';
+        return !playerOne.name().equals(playerName) && !playerTwo.name().equals(playerName);
     }
 }

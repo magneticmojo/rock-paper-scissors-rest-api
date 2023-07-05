@@ -30,8 +30,9 @@ public class RockPaperScissorsGame {
     }
 
     // todo -> Testa med alla states -> GameCreatedState, GameReadyState, GameActiveState, GameEndedState
-    public GameState makeMove(String playerName, Move move) {
-        gameState = gameState.makeMove(playerName, move);
+    public GameState makeMove(PlayerMove playerMove) {
+        gameState = gameState.makeMove(playerMove);
+        System.out.println("gameState = " + gameState);
         return gameState;
     }
 }

@@ -2,11 +2,12 @@ package com.example.rpsapi.api.state;
 
 import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
+import com.example.rpsapi.api.model.entities.PlayerMove;
 
 public interface GameState { // TODO -> REMOVE RETURN TYPE FROM METHODS?
 
     GameState joinGame(Player player);
-    GameState makeMove(String playerName, Move move);
+    GameState makeMove(PlayerMove playerMove);
 }
 
 /*
