@@ -44,13 +44,14 @@ class FirstMoveMadeAwaitingLastMoveStateTest {
         assertThrows(PlayerException.class, () -> firstMoveMadeAwaitingLastMoveState.makeMove(duplicatePlayerMove));
     }
 
-/*    @Test
+    @Test
     void testMakeMoveWithValidMove() {
         PlayerMove validPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
         GameState gameResult = firstMoveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
 
         assertTrue(gameResult instanceof GameEndedState);
-        assertEquals("player1 WON BY ROCK BEATING SCISSORS. player2 LOST", ((GameEndedState) gameResult).getResult());
+        String expectedResult = "player1 won by ROCK beating SCISSORS. player2 lost";
+        assertEquals(expectedResult, ((GameEndedState) gameResult).gameResult());
     }
 
     @Test
@@ -59,6 +60,7 @@ class FirstMoveMadeAwaitingLastMoveStateTest {
         GameState gameResult = firstMoveMadeAwaitingLastMoveState.makeMove(tiePlayerMove);
 
         assertTrue(gameResult instanceof GameEndedState);
-        assertEquals("TIE", ((GameEndedState) gameResult).getResult());
-    }*/
+        String expectedResult = "TIE: ROCK vs ROCK";
+        assertEquals(expectedResult, ((GameEndedState) gameResult).gameResult());
+    }
 }

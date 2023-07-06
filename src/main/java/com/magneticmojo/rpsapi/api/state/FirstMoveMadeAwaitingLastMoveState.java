@@ -61,6 +61,6 @@ public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
     }
 
     private String generateTieMessage(Move ownMove, Move opponentMove) {
-        return "TIE: " + ownMove.name() + " versus " + opponentMove.name();
+        return "TIE: " + ownMove.name() + " vs " + opponentMove.name();
     }
 }
