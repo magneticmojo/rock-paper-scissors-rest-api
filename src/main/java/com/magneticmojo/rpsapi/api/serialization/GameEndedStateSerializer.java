@@ -28,9 +28,9 @@ public class GameEndedStateSerializer extends StdSerializer<GameEndedState> {
         gen.writeStringField("message", "Game ended");
         gen.writeStringField("playerOne", state.playerOne().name());
         gen.writeStringField("playerTwo", state.playerTwo().name());
-        gen.writeStringField("firstMove", state.firstPlayerMove().player().name() + " made the first move: " + state.firstPlayerMove().move().name());
-        gen.writeStringField("lastMove", state.lastPlayerMove().player().name() + " made the last move: " + state.lastPlayerMove().move().name());
-        gen.writeStringField("gameResult", state.result());
+        gen.writeStringField("firstMoveBy", state.firstPlayerMove().player().name() + " (" + state.firstPlayerMove().move().name() + ")");
+        gen.writeStringField("lastMoveBy", state.lastPlayerMove().player().name() + " (" + state.lastPlayerMove().move().name() + ")");
+        gen.writeStringField("gameResult", state.gameResult());
         gen.writeEndObject();
     }
 }

@@ -47,18 +47,18 @@ class FirstMoveMadeAwaitingLastMoveStateTest {
 /*    @Test
     void testMakeMoveWithValidMove() {
         PlayerMove validPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
-        GameState result = firstMoveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
+        GameState gameResult = firstMoveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
 
-        assertTrue(result instanceof GameEndedState);
-        assertEquals("player1 WON BY ROCK BEATING SCISSORS. player2 LOST", ((GameEndedState) result).getResult());
+        assertTrue(gameResult instanceof GameEndedState);
+        assertEquals("player1 WON BY ROCK BEATING SCISSORS. player2 LOST", ((GameEndedState) gameResult).getResult());
     }
 
     @Test
     void testMakeMoveWithTie() {
         PlayerMove tiePlayerMove = new PlayerMove(playerTwo, Move.ROCK);
-        GameState result = firstMoveMadeAwaitingLastMoveState.makeMove(tiePlayerMove);
+        GameState gameResult = firstMoveMadeAwaitingLastMoveState.makeMove(tiePlayerMove);
 
-        assertTrue(result instanceof GameEndedState);
-        assertEquals("TIE", ((GameEndedState) result).getResult());
+        assertTrue(gameResult instanceof GameEndedState);
+        assertEquals("TIE", ((GameEndedState) gameResult).getResult());
     }*/
 }

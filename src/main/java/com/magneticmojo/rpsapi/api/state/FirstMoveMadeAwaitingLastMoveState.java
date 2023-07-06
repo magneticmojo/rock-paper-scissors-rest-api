@@ -48,7 +48,7 @@ public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
         Move lastMove = lastPlayerMove.move();
 
         if (firstMove.isTied(lastMove)) {
-            return "TIE";
+            return generateTieMessage(firstMove, lastMove);
         } else if (firstMove.isWinnerAgainst(lastMove)) {
             return generateVictoryMessage(firstPlayerMove.player(), lastPlayerMove.player(), firstMove, lastMove);
         } else {
@@ -58,5 +58,9 @@ public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
 
     private String generateVictoryMessage(Player player, Player opponent, Move ownMove, Move opponentMove) {
         return player.name() + " won by " + ownMove.name() + " beating " + opponentMove.name() + ". " + opponent.name() + " lost";
+    }
+
+    private String generateTieMessage(Move ownMove, Move opponentMove) {
+        return "TIE: " + ownMove.name() + " versus " + opponentMove.name();
     }
 }

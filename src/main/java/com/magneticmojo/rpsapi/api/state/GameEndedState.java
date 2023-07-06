@@ -11,7 +11,7 @@ public record GameEndedState(Player playerOne,
                              Player playerTwo,
                              PlayerMove firstPlayerMove,
                              PlayerMove lastPlayerMove,
-                             String result) implements GameState { // TODO @TEST
+                             String gameResult) implements GameState { // TODO @TEST
 
     @Override
     public GameState joinGame(Player player) {

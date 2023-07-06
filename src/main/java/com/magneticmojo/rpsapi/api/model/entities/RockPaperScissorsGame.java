@@ -5,7 +5,7 @@ import com.magneticmojo.rpsapi.api.state.GameState;
 
 import java.util.UUID;
 
-public class RockPaperScissorsGame { // TODO @TEST
+public class RockPaperScissorsGame {
 
     private GameState gameState;
     private final String gameId;
@@ -23,13 +23,11 @@ public class RockPaperScissorsGame { // TODO @TEST
         return gameState;
     }
 
-    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, FirstMoveMadeAwaitingLastMoveState, GameEndedState
     public GameState joinGame(Player playerTwo) {
         gameState = gameState.joinGame(playerTwo);
         return gameState;
     }
 
-    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, FirstMoveMadeAwaitingLastMoveState, GameEndedState
     public GameState makeMove(PlayerMove playerMove) {
         gameState = gameState.makeMove(playerMove);
         return gameState;

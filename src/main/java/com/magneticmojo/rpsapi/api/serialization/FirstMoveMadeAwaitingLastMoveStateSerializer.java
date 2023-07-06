@@ -28,7 +28,7 @@ public class FirstMoveMadeAwaitingLastMoveStateSerializer extends StdSerializer<
         gen.writeStringField("message", state.firstPlayerMove().player().name() + " made the first move");
         gen.writeStringField("playerOne", state.playerOne().name());
         gen.writeStringField("playerTwo", state.playerTwo().name());
-        gen.writeStringField("firstMove", state.firstPlayerMove().player().name());
+        gen.writeStringField("firstMoveBy", state.firstPlayerMove().player().name());
         gen.writeEndObject();
     }
 }

@@ -17,34 +17,30 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice // TODO @TEST
+@ControllerAdvice
 public class RockPaperScissorsExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleGameNotFoundException(GameNotFoundException e) {
-        ErrorResponse error = new ErrorResponse(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return createErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({GameNotFullException.class, GameFullException.class, GameEndedException.class})
     public ResponseEntity<ErrorResponse> handleGameStateExceptions(GameException e) {
-        ErrorResponse error = new ErrorResponse(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return createErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(PlayerNotInGameException.class)
     public ResponseEntity<ErrorResponse> handleGameException(PlayerNotInGameException e) {
-        ErrorResponse error = new ErrorResponse(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return createErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MultipleMovesProhibitedException.class)
     public ResponseEntity<ErrorResponse> handlePlayerException(MultipleMovesProhibitedException e) {
-        ErrorResponse error = new ErrorResponse(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return createErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @Override // TODO @TEST
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status,
@@ -58,4 +54,10 @@ public class RockPaperScissorsExceptionHandler extends ResponseEntityExceptionHa
         ValidationErrorResponse response = new ValidationErrorResponse(status.value(), errors);
         return new ResponseEntity<>(response, headers, status);
     }
+
+    private ResponseEntity<ErrorResponse> createErrorResponse(String message, HttpStatus httpStatus) {
+        ErrorResponse error = new ErrorResponse(message);
+        return new ResponseEntity<>(error, httpStatus);
+    }
 }
+
