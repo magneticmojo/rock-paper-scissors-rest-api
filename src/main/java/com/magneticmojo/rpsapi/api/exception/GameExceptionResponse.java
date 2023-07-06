@@ -1,12 +1,12 @@
 package com.magneticmojo.rpsapi.api.exception;
 
-public class GameErrorResponse {
+public class GameExceptionResponse {
 
     // TODO -> KANSKE TA BORT DENNA
     private String errorCode;
     private String errorMessage;
 
-    public GameErrorResponse(String errorCode, String errorMessage) {
+    public GameExceptionResponse(String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

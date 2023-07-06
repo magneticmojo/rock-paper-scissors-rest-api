@@ -13,16 +13,13 @@ public record GameActiveState(Player playerOne,
                               Player playerTwo,
                               PlayerMove firstPlayerMove) implements GameState {
 
-    private static final int PLAYER_WITH_FIRST_MOVE_WINS_CONDITION = 1; // TODO -> FLYTTA IN I METOD
-    private static final int PLAYER_WITH_LAST_MOVE_WINS_CONDITION = 2; // TODO -> FLYTTA IN I METOD
-
     @Override
     public GameState joinGame(Player player) {
         throw new MaxPlayerLimitReachedException("Game full. Cannot join game");
     }
 
     @Override
-    public GameState makeMove(PlayerMove lastPlayerMove) { // TODO -> SÄKERSTÄLL EDGE CASES
+    public GameState makeMove(PlayerMove lastPlayerMove) {
 
         if (playerNotInGame(lastPlayerMove.player().name())) {
             throw new PlayerException("Player not in game. Cannot make move");
@@ -32,7 +29,9 @@ public record GameActiveState(Player playerOne,
             throw new PlayerException("Player already made move. Cannot make move");
         }
 
-        return new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove, getResult(firstPlayerMove, lastPlayerMove));
+        String result = getResult(firstPlayerMove, lastPlayerMove);
+
+        return new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove, result);
     }
 
     private boolean playerNotInGame(String playerName) {
@@ -43,29 +42,20 @@ public record GameActiveState(Player playerOne,
         return lastPlayerMove.player().name().equals(firstPlayerMove.player().name());
     }
 
-    public String getResult(PlayerMove firstPlayerMove, PlayerMove lastPlayerMove) { // TODO SEPARATION OF CONCERNS --> TILL MOVE
-        Player firstMovePlayer = firstPlayerMove.player();
-        Player lastMovePlayer = lastPlayerMove.player();
+    public String getResult(PlayerMove firstPlayerMove, PlayerMove lastPlayerMove) {
         Move firstMove = firstPlayerMove.move();
         Move lastMove = lastPlayerMove.move();
 
-        int relativePosition = calculateCyclicEnumRelation(firstMove, lastMove);
-
-        if (PLAYER_WITH_FIRST_MOVE_WINS_CONDITION == relativePosition) {
-            return generateVictoryMessage(firstMovePlayer, lastMovePlayer,firstMove, lastMove);
-        } else if (PLAYER_WITH_LAST_MOVE_WINS_CONDITION == relativePosition) {
-            return generateVictoryMessage(lastMovePlayer, firstMovePlayer,lastMove, firstMove);
-        } else {
+        if (firstMove.isTied(lastMove)) {
             return "TIE";
+        } else if (firstMove.isWinnerAgainst(lastMove)) {
+            return generateVictoryMessage(firstPlayerMove.player(), lastPlayerMove.player(), firstMove, lastMove);
+        } else {
+            return generateVictoryMessage(lastPlayerMove.player(), firstPlayerMove.player(),lastMove, firstMove);
         }
     }
 
     private String generateVictoryMessage(Player player, Player opponent, Move ownMove, Move opponentMove) {
-        return player.name() + " WON BY " + ownMove.name() + " BEATING " + opponentMove.name() + ". " + opponent.name() + " LOST";
-    }
-
-    private int calculateCyclicEnumRelation(Move firstMove, Move lastMove) { // todo -> MOVE TO ENUM
-        int numberOfPossibleMoves = Move.values().length;
-        return (numberOfPossibleMoves + firstMove.ordinal() - lastMove.ordinal()) % numberOfPossibleMoves;
+        return player.name() + " WON BY " + ownMove.name() + " BEATING " + opponentMove.name() + ". " + opponent.name() + " LOST"; // TODO -> FLYTTA IN I Serializer
     }
 }

@@ -8,11 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,32 +48,32 @@ public class GameExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({GameNotFoundException.class})
-    public ResponseEntity<GameErrorResponse> handleGameNotFoundException(GameNotFoundException e) {
-        GameErrorResponse error = new GameErrorResponse("GAME NOT FOUND", e.getMessage());
+    public ResponseEntity<GameExceptionResponse> handleGameNotFoundException(GameNotFoundException e) {
+        GameExceptionResponse error = new GameExceptionResponse("GAME NOT FOUND", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({MoveProhibitedMissingPlayerException.class})
-    public ResponseEntity<GameErrorResponse> handleMoveProhibitedMissingPlayerException(MoveProhibitedMissingPlayerException e) {
-        GameErrorResponse error = new GameErrorResponse("MOVE PROHIBITED, PLAYER MISSING", e.getMessage());
+    public ResponseEntity<GameExceptionResponse> handleMoveProhibitedMissingPlayerException(MoveProhibitedMissingPlayerException e) {
+        GameExceptionResponse error = new GameExceptionResponse("MOVE PROHIBITED, PLAYER MISSING", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({PlayerException.class})
-    public ResponseEntity<GameErrorResponse> handleGameException(RuntimeException e) {
-        GameErrorResponse error = new GameErrorResponse("PROHIBITED PLAYER ACTION", e.getMessage());
+    public ResponseEntity<GameExceptionResponse> handleGameException(RuntimeException e) {
+        GameExceptionResponse error = new GameExceptionResponse("PROHIBITED PLAYER ACTION", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({JoinFullGameException.class})
-    public ResponseEntity<GameErrorResponse> handleJoinFullGameException(JoinFullGameException e) {
-        GameErrorResponse error = new GameErrorResponse("GAME IS FULL", e.getMessage());
+    public ResponseEntity<GameExceptionResponse> handleJoinFullGameException(JoinFullGameException e) {
+        GameExceptionResponse error = new GameExceptionResponse("GAME IS FULL", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({GameEndedException.class})
-    public ResponseEntity<GameErrorResponse> handleGameEndedException(GameEndedException e) {
-        GameErrorResponse error = new GameErrorResponse("GAME ENDED", e.getMessage());
+    public ResponseEntity<GameExceptionResponse> handleGameEndedException(GameEndedException e) {
+        GameExceptionResponse error = new GameExceptionResponse("GAME ENDED", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
