@@ -1,11 +1,10 @@
 /*
-package com.example.rpsapi;
+package com.magneticmojo.rpsapi;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 
 // todo -> OpenJDK 64-Bit Server VM warning: Options -Xverify:none and -noverify were deprecated in JDK 13 and will likely be removed in a future release.
 
@@ -16,7 +15,7 @@ public class RpsapiApplicationTests {
 
     @Test
     public void contextLoads() {
-        assertThat(ctx).isNotNull();
+
     }
 
 }

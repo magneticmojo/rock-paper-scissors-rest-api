@@ -9,7 +9,7 @@ import com.magneticmojo.rpsapi.api.state.GameState;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GameService { // TODO @TEST
+public class GameService {
 
     private final GameRepository gameRepository;
 
