@@ -3,31 +3,32 @@ package com.magneticmojo.rpsapi.api.serialization;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.magneticmojo.rpsapi.api.state.GameReadyState;
+import com.magneticmojo.rpsapi.api.state.MoveMadeAwaitingLastMoveState;
 
 import java.io.IOException;
-// TODO @TEST
-public class GameReadyStateSerializer extends StdSerializer<GameReadyState> {
 
-    public GameReadyStateSerializer() {
+public class MoveMadeAwaitingLastMoveStateSerializer extends StdSerializer<MoveMadeAwaitingLastMoveState> { // TODO @TEST
+
+    public MoveMadeAwaitingLastMoveStateSerializer() {
         this(null);
     }
 
-    public GameReadyStateSerializer(Class<GameReadyState> t) {
+    public MoveMadeAwaitingLastMoveStateSerializer(Class<MoveMadeAwaitingLastMoveState> t) {
         super(t);
     }
 
     @Override
     public void serialize(
-            GameReadyState state,
+            MoveMadeAwaitingLastMoveState state,
             JsonGenerator gen,
             SerializerProvider provider)
             throws IOException {
 
         gen.writeStartObject();
-        gen.writeStringField("msg", "PLAYER TWO JOINED. GAME IS READY");
+        gen.writeStringField("msg", "MOVE MADE. GAME IS ACTIVE");
         gen.writeStringField("playerOne", state.playerOne().name());
         gen.writeStringField("playerTwo", state.playerTwo().name());
+        gen.writeStringField("firstPlayerMove", state.firstPlayerMove().player().name() + " MADE ITS MOVE");
         gen.writeEndObject();
     }
 }

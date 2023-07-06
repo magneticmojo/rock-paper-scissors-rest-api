@@ -1,32 +1,33 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.magneticmojo.rpsapi.api.exception.MaxPlayerLimitReachedException;
-import com.magneticmojo.rpsapi.api.exception.PlayerException;
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameFullException;
+import com.magneticmojo.rpsapi.api.exceptions.playerexception.MultipleMovesProhibitedException;
+import com.magneticmojo.rpsapi.api.exceptions.playerexception.PlayerNotInGameException;
 import com.magneticmojo.rpsapi.api.model.entities.Move;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
-import com.magneticmojo.rpsapi.api.serialization.GameActiveStateSerializer;
+import com.magneticmojo.rpsapi.api.serialization.MoveMadeAwaitingLastMoveStateSerializer;
 
-@JsonSerialize(using = GameActiveStateSerializer.class)
-public record GameActiveState(Player playerOne,
-                              Player playerTwo,
-                              PlayerMove firstPlayerMove) implements GameState {
+@JsonSerialize(using = MoveMadeAwaitingLastMoveStateSerializer.class)
+public record MoveMadeAwaitingLastMoveState(Player playerOne,
+                                            Player playerTwo,
+                                            PlayerMove firstPlayerMove) implements GameState { // TODO @TEST
 
     @Override
     public GameState joinGame(Player player) {
-        throw new MaxPlayerLimitReachedException("Game full. Cannot join game");
+        throw new GameFullException("Game full. Cannot join game");
     }
 
     @Override
     public GameState makeMove(PlayerMove lastPlayerMove) {
 
         if (playerNotInGame(lastPlayerMove.player().name())) {
-            throw new PlayerException("Player not in game. Cannot make move");
+            throw new PlayerNotInGameException("Player not in game. Cannot make move");
         }
 
         if (playerHasMadeMove(lastPlayerMove)) {
-            throw new PlayerException("Player already made move. Cannot make move");
+            throw new MultipleMovesProhibitedException("Player already made move. Cannot make another move");
         }
 
         String result = getResult(firstPlayerMove, lastPlayerMove);
@@ -56,6 +57,6 @@ public record GameActiveState(Player playerOne,
     }
 
     private String generateVictoryMessage(Player player, Player opponent, Move ownMove, Move opponentMove) {
-        return player.name() + " WON BY " + ownMove.name() + " BEATING " + opponentMove.name() + ". " + opponent.name() + " LOST"; // TODO -> FLYTTA IN I Serializer
+        return player.name() + " WON BY " + ownMove.name() + " BEATING " + opponentMove.name() + ". " + opponent.name() + " LOST";
     }
 }

@@ -1,6 +1,6 @@
 package com.magneticmojo.rpsapi.service;
 
-import com.magneticmojo.rpsapi.api.exception.GameNotFoundException;
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameNotFoundException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.model.entities.RockPaperScissorsGame;
@@ -17,36 +17,36 @@ public class GameService { // TODO @TEST
         this.gameRepository = gameRepository;
     }
 
-    // POST /api/games
-    public String createGame(Player player) {
-        RockPaperScissorsGame game = new RockPaperScissorsGame(player);
-        gameRepository.addGame(game);
+    public String createGame(Player playerOne) {
+        RockPaperScissorsGame game = new RockPaperScissorsGame(playerOne);
+        addNewGame(game);
         return game.getId();
     }
 
-    // GET /api/games/{id}
+    private void addNewGame(RockPaperScissorsGame game) {
+        gameRepository.addGame(game);
+    }
+
     public GameState getGameState(String id) {
-        RockPaperScissorsGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         return rpsGame.getState();
     }
 
-    private RockPaperScissorsGame getGame(String id) {
-        RockPaperScissorsGame rpsGame = gameRepository.getGame(id);
-        if (rpsGame == null) {
-            throw new GameNotFoundException("Invalid id");
-        }
-        return rpsGame;
-    }
-
-    // PATCH /api/games/{gameId}/join
     public GameState joinGame(String id, Player playerTwo) {
-        RockPaperScissorsGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         return rpsGame.joinGame(playerTwo);
     }
 
-    // PATCH /api/games/{id}/move
     public GameState makeMove(String id, PlayerMove playerMove) {
-        RockPaperScissorsGame rpsGame = getGame(id);
+        RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         return rpsGame.makeMove(playerMove);
+    }
+
+    private RockPaperScissorsGame getGameOrElseThrow(String id) {
+        RockPaperScissorsGame rpsGame = gameRepository.getGame(id);
+        if (rpsGame == null) {
+            throw new GameNotFoundException("Invalid id: ", id);
+        }
+        return rpsGame;
     }
 }

@@ -1,7 +1,7 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.magneticmojo.rpsapi.api.exception.GameEndedException;
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameEndedException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.GameEndedStateSerializer;

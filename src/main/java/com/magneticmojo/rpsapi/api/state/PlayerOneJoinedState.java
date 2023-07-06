@@ -1,15 +1,13 @@
 package com.magneticmojo.rpsapi.api.state;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.magneticmojo.rpsapi.api.exception.MoveProhibitedMissingPlayerException;
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameNotFullException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
-import com.magneticmojo.rpsapi.api.serialization.GameCreatedStateSerializer;
+import com.magneticmojo.rpsapi.api.serialization.PlayerOneJoinedStateSerializer;
 
-@JsonSerialize(using = GameCreatedStateSerializer.class)
-public record GameCreatedState(Player playerOne) implements GameState {
-
-    private static final String DUPLICATE_NAME_SUFFIX = "2";
+@JsonSerialize(using = PlayerOneJoinedStateSerializer.class)
+public record PlayerOneJoinedState(Player playerOne) implements GameState { // TODO @TEST
 
     @Override
     public GameState joinGame(Player playerTwo) {
@@ -18,7 +16,7 @@ public record GameCreatedState(Player playerOne) implements GameState {
             playerTwo = createPlayerWithNameSuffix(playerTwo);
         }
 
-        return new GameReadyState(playerOne, playerTwo);
+        return new PlayerTwoJoinedState(playerOne, playerTwo);
     }
 
     private boolean isDuplicateName(Player playerTwo) {
@@ -26,11 +24,15 @@ public record GameCreatedState(Player playerOne) implements GameState {
     }
 
     private Player createPlayerWithNameSuffix(Player playerTwo) {
-        return new Player(playerTwo.name() + DUPLICATE_NAME_SUFFIX);
+        return new Player(playerTwo.name() + getDuplicateNameSuffix());
+    }
+
+    private String getDuplicateNameSuffix() {
+        return "2";
     }
 
     @Override
     public GameState makeMove(PlayerMove playerMove) {
-        throw new MoveProhibitedMissingPlayerException("MISSING PLAYER. MOVE PROHIBITED.");
+        throw new GameNotFullException("Move prohibited. Player two not joined");
     }
 }

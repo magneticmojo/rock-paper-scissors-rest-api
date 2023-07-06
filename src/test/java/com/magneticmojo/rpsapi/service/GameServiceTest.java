@@ -6,7 +6,7 @@ import com.example.rpsapi.api.model.entities.Move;
 import com.example.rpsapi.api.model.entities.Player;
 import com.example.rpsapi.api.model.entities.RockPaperScissorsGame;
 import com.example.rpsapi.api.repository.GameRepository;
-import com.example.rpsapi.api.state.GameActiveState;
+import com.example.rpsapi.api.state.MoveMadeAwaitingLastMoveState;
 import com.example.rpsapi.api.state.GameState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ public class GameServiceTest {
     public void testGetGameState() {
         String gameId = "game1";
         RockPaperScissorsGame game = new RockPaperScissorsGame(player);
-        GameState gameState = new GameActiveState(game);
+        GameState gameState = new MoveMadeAwaitingLastMoveState(game);
         game.setState(gameState);
         when(gameRepository.getGame(gameId)).thenReturn(game);
 

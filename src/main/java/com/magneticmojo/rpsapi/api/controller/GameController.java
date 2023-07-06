@@ -2,22 +2,13 @@ package com.magneticmojo.rpsapi.api.controller;
 
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
-import com.magneticmojo.rpsapi.api.model.responses.CreateGameResponse;
+import com.magneticmojo.rpsapi.api.model.responses.GameCreatedResponse;
 import com.magneticmojo.rpsapi.api.state.GameState;
 import com.magneticmojo.rpsapi.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-
-// TODO ==> FIXA TESTER
-// TODO ==> Minimera error-handling
-// TODO ==> SPRING BOOT ANNOTATIONER
-// TODO ==> Fixa kommentarer --> Javadoc?
-// TODO ==> Fixa README
-// TODO ==> Catch REsponseStatusException
 @RestController
 @RequestMapping("/api/games")
 public class GameController { // TODO @TEST
@@ -29,9 +20,9 @@ public class GameController { // TODO @TEST
     }
 
     @PostMapping
-    public ResponseEntity<CreateGameResponse> createGame(@RequestBody @Validated Player player) {
-        String id = gameService.createGame(player);
-        CreateGameResponse response = new CreateGameResponse("NEW GAME CREATED", id);
+    public ResponseEntity<GameCreatedResponse> createGame(@RequestBody @Validated Player playerOne) {
+        String id = gameService.createGame(playerOne);
+        GameCreatedResponse response = new GameCreatedResponse("New ROCK-PAPER-SCISSORS-GAME created", id);
         return ResponseEntity.ok(response);
     }
 
@@ -42,8 +33,8 @@ public class GameController { // TODO @TEST
     }
 
     @PatchMapping("/{id}/join")
-    public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody @Validated Player player) {
-        GameState gameState = gameService.joinGame(id, player);
+    public ResponseEntity<GameState> joinGame(@PathVariable String id, @RequestBody @Validated Player playerTwo) {
+        GameState gameState = gameService.joinGame(id, playerTwo);
         return ResponseEntity.ok(gameState);
     }
 
