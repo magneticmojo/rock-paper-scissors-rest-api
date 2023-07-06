@@ -9,7 +9,7 @@ import com.magneticmojo.rpsapi.api.serialization.PlayerTwoJoinedStateSerializer;
 
 @JsonSerialize(using = PlayerTwoJoinedStateSerializer.class)
 public record PlayerTwoJoinedState(Player playerOne,
-                                   Player playerTwo) implements GameState { // TODO @TEST
+                                   Player playerTwo) implements GameState {
 
     @Override
     public GameState joinGame(Player player) {
