@@ -7,7 +7,7 @@ import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.PlayerOneJoinedStateSerializer;
 
 @JsonSerialize(using = PlayerOneJoinedStateSerializer.class)
-public record PlayerOneJoinedState(Player playerOne) implements GameState { // TODO @TEST
+public record PlayerOneJoinedState(Player playerOne) implements GameState {
 
     @Override
     public GameState joinGame(Player playerTwo) {
