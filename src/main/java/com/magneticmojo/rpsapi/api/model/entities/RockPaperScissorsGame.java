@@ -23,13 +23,13 @@ public class RockPaperScissorsGame { // TODO @TEST
         return gameState;
     }
 
-    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, MoveMadeAwaitingLastMoveState, GameEndedState
+    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, FirstMoveMadeAwaitingLastMoveState, GameEndedState
     public GameState joinGame(Player playerTwo) {
         gameState = gameState.joinGame(playerTwo);
         return gameState;
     }
 
-    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, MoveMadeAwaitingLastMoveState, GameEndedState
+    // todo -> Testa med alla states -> PlayerOneJoinedState, PlayerTwoJoinedState, FirstMoveMadeAwaitingLastMoveState, GameEndedState
     public GameState makeMove(PlayerMove playerMove) {
         gameState = gameState.makeMove(playerMove);
         return gameState;

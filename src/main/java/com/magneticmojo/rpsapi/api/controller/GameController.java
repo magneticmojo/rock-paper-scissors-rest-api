@@ -22,7 +22,7 @@ public class GameController { // TODO @TEST
     @PostMapping
     public ResponseEntity<GameCreatedResponse> createGame(@RequestBody @Validated Player playerOne) {
         String id = gameService.createGame(playerOne);
-        GameCreatedResponse response = new GameCreatedResponse("New ROCK-PAPER-SCISSORS-GAME created", id);
+        GameCreatedResponse response = new GameCreatedResponse("Rock-Papper-Scissors game created", id);
         return ResponseEntity.ok(response);
     }
 

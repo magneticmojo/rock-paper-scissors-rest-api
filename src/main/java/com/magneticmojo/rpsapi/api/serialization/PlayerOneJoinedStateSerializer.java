@@ -25,7 +25,7 @@ public class PlayerOneJoinedStateSerializer extends StdSerializer<PlayerOneJoine
             throws IOException {
 
         gen.writeStartObject();
-        gen.writeStringField("msg", "PLAYER ONE CREATED AND JOINED GAME");
+        gen.writeStringField("message", state.playerOne().name() + " created new game");
         gen.writeStringField("playerOne", state.playerOne().name());
         gen.writeEndObject();
     }

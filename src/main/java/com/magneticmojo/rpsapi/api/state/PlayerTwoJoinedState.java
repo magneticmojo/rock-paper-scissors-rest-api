@@ -23,7 +23,7 @@ public record PlayerTwoJoinedState(Player playerOne,
             throw new PlayerNotInGameException("Player not in game. Cannot make move");
         }
 
-        return new MoveMadeAwaitingLastMoveState(playerOne, playerTwo, firstPlayerMove);
+        return new FirstMoveMadeAwaitingLastMoveState(playerOne, playerTwo, firstPlayerMove);
     }
 
     private boolean playerNotInGame(String playerName) {

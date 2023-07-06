@@ -7,12 +7,12 @@ import com.magneticmojo.rpsapi.api.exceptions.playerexception.PlayerNotInGameExc
 import com.magneticmojo.rpsapi.api.model.entities.Move;
 import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
-import com.magneticmojo.rpsapi.api.serialization.MoveMadeAwaitingLastMoveStateSerializer;
+import com.magneticmojo.rpsapi.api.serialization.FirstMoveMadeAwaitingLastMoveStateSerializer;
 
-@JsonSerialize(using = MoveMadeAwaitingLastMoveStateSerializer.class)
-public record MoveMadeAwaitingLastMoveState(Player playerOne,
-                                            Player playerTwo,
-                                            PlayerMove firstPlayerMove) implements GameState { // TODO @TEST
+@JsonSerialize(using = FirstMoveMadeAwaitingLastMoveStateSerializer.class)
+public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
+                                                 Player playerTwo,
+                                                 PlayerMove firstPlayerMove) implements GameState { // TODO @TEST
 
     @Override
     public GameState joinGame(Player player) {
@@ -30,9 +30,9 @@ public record MoveMadeAwaitingLastMoveState(Player playerOne,
             throw new MultipleMovesProhibitedException("Player already made move. Cannot make another move");
         }
 
-        String result = getResult(firstPlayerMove, lastPlayerMove);
+        String gameResult = getGameResult(firstPlayerMove, lastPlayerMove);
 
-        return new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove, result);
+        return new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove, gameResult);
     }
 
     private boolean playerNotInGame(String playerName) {
@@ -43,7 +43,7 @@ public record MoveMadeAwaitingLastMoveState(Player playerOne,
         return lastPlayerMove.player().name().equals(firstPlayerMove.player().name());
     }
 
-    public String getResult(PlayerMove firstPlayerMove, PlayerMove lastPlayerMove) {
+    public String getGameResult(PlayerMove firstPlayerMove, PlayerMove lastPlayerMove) {
         Move firstMove = firstPlayerMove.move();
         Move lastMove = lastPlayerMove.move();
 
@@ -57,6 +57,6 @@ public record MoveMadeAwaitingLastMoveState(Player playerOne,
     }
 
     private String generateVictoryMessage(Player player, Player opponent, Move ownMove, Move opponentMove) {
-        return player.name() + " WON BY " + ownMove.name() + " BEATING " + opponentMove.name() + ". " + opponent.name() + " LOST";
+        return player.name() + " won by " + ownMove.name() + " beating " + opponentMove.name() + ". " + opponent.name() + " lost";
     }
 }

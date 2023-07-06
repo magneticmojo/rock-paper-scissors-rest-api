@@ -10,44 +10,44 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MoveMadeAwaitingLastMoveStateTest {
+class FirstMoveMadeAwaitingLastMoveStateTest {
 
     private Player playerOne;
     private Player playerTwo;
     private PlayerMove firstPlayerMove;
-    private MoveMadeAwaitingLastMoveState moveMadeAwaitingLastMoveState;
+    private FirstMoveMadeAwaitingLastMoveState firstMoveMadeAwaitingLastMoveState;
 
     @BeforeEach
     void setUp() {
         playerOne = new Player("player1");
         playerTwo = new Player("player2");
         firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
-        moveMadeAwaitingLastMoveState = new MoveMadeAwaitingLastMoveState(playerOne, playerTwo, firstPlayerMove);
+        firstMoveMadeAwaitingLastMoveState = new FirstMoveMadeAwaitingLastMoveState(playerOne, playerTwo, firstPlayerMove);
     }
 
     @Test
     void testJoinGameException() {
         Player playerThree = new Player("player3");
-        assertThrows(GameFullException.class, () -> moveMadeAwaitingLastMoveState.joinGame(playerThree));
+        assertThrows(GameFullException.class, () -> firstMoveMadeAwaitingLastMoveState.joinGame(playerThree));
     }
 
     @Test
     void testMakeMoveWithPlayerNotInGame() {
         Player playerThree = new Player("player3");
         PlayerMove playerThreeMove = new PlayerMove(playerThree, Move.ROCK);
-        assertThrows(PlayerException.class, () -> moveMadeAwaitingLastMoveState.makeMove(playerThreeMove));
+        assertThrows(PlayerException.class, () -> firstMoveMadeAwaitingLastMoveState.makeMove(playerThreeMove));
     }
 
     @Test
     void testMakeMoveWithPlayerAlreadyMadeMove() {
         PlayerMove duplicatePlayerMove = new PlayerMove(playerOne, Move.PAPER);
-        assertThrows(PlayerException.class, () -> moveMadeAwaitingLastMoveState.makeMove(duplicatePlayerMove));
+        assertThrows(PlayerException.class, () -> firstMoveMadeAwaitingLastMoveState.makeMove(duplicatePlayerMove));
     }
 
 /*    @Test
     void testMakeMoveWithValidMove() {
         PlayerMove validPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
-        GameState result = moveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
+        GameState result = firstMoveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
 
         assertTrue(result instanceof GameEndedState);
         assertEquals("player1 WON BY ROCK BEATING SCISSORS. player2 LOST", ((GameEndedState) result).getResult());
@@ -56,7 +56,7 @@ class MoveMadeAwaitingLastMoveStateTest {
     @Test
     void testMakeMoveWithTie() {
         PlayerMove tiePlayerMove = new PlayerMove(playerTwo, Move.ROCK);
-        GameState result = moveMadeAwaitingLastMoveState.makeMove(tiePlayerMove);
+        GameState result = firstMoveMadeAwaitingLastMoveState.makeMove(tiePlayerMove);
 
         assertTrue(result instanceof GameEndedState);
         assertEquals("TIE", ((GameEndedState) result).getResult());
