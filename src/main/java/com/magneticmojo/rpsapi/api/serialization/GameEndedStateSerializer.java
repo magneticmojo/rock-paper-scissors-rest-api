@@ -6,15 +6,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.magneticmojo.rpsapi.api.state.GameEndedState;
 
 import java.io.IOException;
-// TODO @TEST
+
 public class GameEndedStateSerializer extends StdSerializer<GameEndedState> {
 
     public GameEndedStateSerializer() {
-        this(null);
-    }
-
-    public GameEndedStateSerializer(Class<GameEndedState> t) {
-        super(t);
+        super(GameEndedState.class);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.magneticmojo.rpsapi.service;
+package com.magneticmojo.rpsapi.api.service;
 
 import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameNotFoundException;
 import com.magneticmojo.rpsapi.api.model.entities.Player;

@@ -9,7 +9,7 @@ import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.model.responses.GameCreatedResponse;
 import com.magneticmojo.rpsapi.api.state.*;
-import com.magneticmojo.rpsapi.service.GameService;
+import com.magneticmojo.rpsapi.api.service.GameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

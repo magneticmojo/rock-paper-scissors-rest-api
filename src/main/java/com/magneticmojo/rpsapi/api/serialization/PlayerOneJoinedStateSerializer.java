@@ -7,14 +7,10 @@ import com.magneticmojo.rpsapi.api.state.PlayerOneJoinedState;
 
 import java.io.IOException;
 
-public class PlayerOneJoinedStateSerializer extends StdSerializer<PlayerOneJoinedState> { // TODO @TEST
+public class PlayerOneJoinedStateSerializer extends StdSerializer<PlayerOneJoinedState> {
 
     public PlayerOneJoinedStateSerializer() {
-        this(null);
-    }
-
-    public PlayerOneJoinedStateSerializer(Class<PlayerOneJoinedState> t) {
-        super(t);
+        super(PlayerOneJoinedState.class);
     }
 
     @Override

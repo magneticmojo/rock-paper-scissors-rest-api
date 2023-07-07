@@ -6,15 +6,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.magneticmojo.rpsapi.api.state.PlayerTwoJoinedState;
 
 import java.io.IOException;
-// TODO @TEST
+
 public class PlayerTwoJoinedStateSerializer extends StdSerializer<PlayerTwoJoinedState> {
 
     public PlayerTwoJoinedStateSerializer() {
-        this(null);
-    }
-
-    public PlayerTwoJoinedStateSerializer(Class<PlayerTwoJoinedState> t) {
-        super(t);
+        super(PlayerTwoJoinedState.class);
     }
 
     @Override

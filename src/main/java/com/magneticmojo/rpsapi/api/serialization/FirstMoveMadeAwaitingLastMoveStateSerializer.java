@@ -7,14 +7,10 @@ import com.magneticmojo.rpsapi.api.state.FirstMoveMadeAwaitingLastMoveState;
 
 import java.io.IOException;
 
-public class FirstMoveMadeAwaitingLastMoveStateSerializer extends StdSerializer<FirstMoveMadeAwaitingLastMoveState> { // TODO @TEST
+public class FirstMoveMadeAwaitingLastMoveStateSerializer extends StdSerializer<FirstMoveMadeAwaitingLastMoveState> {
 
     public FirstMoveMadeAwaitingLastMoveStateSerializer() {
-        this(null);
-    }
-
-    public FirstMoveMadeAwaitingLastMoveStateSerializer(Class<FirstMoveMadeAwaitingLastMoveState> t) {
-        super(t);
+        super(FirstMoveMadeAwaitingLastMoveState.class);
     }
 
     @Override
