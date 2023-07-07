@@ -10,10 +10,17 @@ import com.magneticmojo.rpsapi.api.state.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * This test class validates the functionality of the GameService class,
+ * ensuring that the service interacts correctly with GameRepository and RockPaperScissorsGame.
+ * The tests cover scenarios like creating games, getting game states, joining games, and making moves,
+ * while handling both success and failure scenarios.
+ */
 public class GameServiceTest {
 
     private GameRepository gameRepository;

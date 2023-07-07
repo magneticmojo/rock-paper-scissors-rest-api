@@ -19,11 +19,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * This is a test class for the GameController class.
+ * It aims to verify the behavior of the GameController class by using mock implementations
+ * of the dependent classes and the MockMvc testing framework.
+ * It covers all public API endpoints exposed by GameController such as creating a new game, joining an existing game,
+ * making a move in the game, and retrieving the current game state.
+ * It tests various possible states of the game, ensuring the correctness of the controller
+ * in different situations such as a game is full, a player making multiple moves, and a player who is not in the game.
+ */
 @WebMvcTest(GameController.class)
-public class GameControllerTest { // TODO CHECK
+public class GameControllerTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -65,9 +75,11 @@ public class GameControllerTest { // TODO CHECK
         Mockito.when(gameService.getGameState(gameId)).thenReturn(gameState);
 
         mockMvc.perform(get("/api/games/" + gameId)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.playerOne").value(playerOne.name()));
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
     @Test
@@ -97,6 +109,8 @@ public class GameControllerTest { // TODO CHECK
                 .andExpect(jsonPath("$.playerOne").value(playerOne.name()))
                 .andExpect(jsonPath("$.playerTwo").value(playerTwo.name()))
                 .andExpect(jsonPath("$.firstMoveBy").value(playerOne.name()));
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
     @Test
@@ -119,6 +133,8 @@ public class GameControllerTest { // TODO CHECK
                 .andExpect(jsonPath("$.firstMoveBy").value(playerOne.name() + " (" + firstPlayerMove.move().name() + ")"))
                 .andExpect(jsonPath("$.lastMoveBy").value(playerTwo.name() + " (" + lastPlayerMove.move().name() + ")"))
                 .andExpect(jsonPath("$.gameResult").value(gameResult));
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
 
@@ -132,6 +148,8 @@ public class GameControllerTest { // TODO CHECK
                         .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        Mockito.verify(gameService, Mockito.times(1)).joinGame(gameId, playerOne);
     }
 
     @Test
@@ -144,6 +162,8 @@ public class GameControllerTest { // TODO CHECK
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
@@ -168,6 +188,8 @@ public class GameControllerTest { // TODO CHECK
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorMessage").value("Player already made move. Cannot make another move"));
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
@@ -192,5 +214,7 @@ public class GameControllerTest { // TODO CHECK
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value("Player is not in the game."));
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 }

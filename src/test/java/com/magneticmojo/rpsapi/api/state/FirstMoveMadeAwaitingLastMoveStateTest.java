@@ -10,6 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This test class validates the functionality of the FirstMoveMadeAwaitingLastMoveState class,
+ * ensuring that the game state management works correctly after the first move is made in a game.
+ * The tests cover various game scenarios including full games, player participation, and different move outcomes.
+ */
 class FirstMoveMadeAwaitingLastMoveStateTest {
 
     private Player playerOne;

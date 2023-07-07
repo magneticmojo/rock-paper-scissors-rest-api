@@ -1,12 +1,24 @@
 package com.magneticmojo.rpsapi.api.model.entities;
 
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameEndedException;
+import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameFullException;
 import com.magneticmojo.rpsapi.api.exceptions.gameexception.GameNotFullException;
+import com.magneticmojo.rpsapi.api.exceptions.playerexception.PlayerNotInGameException;
 import com.magneticmojo.rpsapi.api.state.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This is a test class for the RockPaperScissorsGame class.
+ * It tests the behavior of the game in different situations and verifies the correctness
+ * of the game state transitions.
+ * It covers scenarios such as joining the game, making a move, and the game result
+ * in various scenarios such as a tie and a win by any player.
+ * It also ensures the correctness of the game rules such as a player not in the game can't make a move,
+ * no player can join a game that has ended or is already full.
+ */
 public class RockPaperScissorsGameTest {
 
     private Player p1;
@@ -78,5 +90,35 @@ public class RockPaperScissorsGameTest {
         String gameResult = p2.name() + " won by " + Move.PAPER + " beating " + Move.ROCK + ". " + p1.name() + " lost";
         assertEquals(state.getClass(), GameEndedState.class);
         assertEquals(gameResult, ((GameEndedState) state).gameResult());
+    }
+
+
+    @Test
+    void testJoinGame_AfterGameEnded_ThrowsGameEndedException() {
+        game.joinGame(p2);
+
+        PlayerMove playerOneMove = new PlayerMove(p1, Move.ROCK);
+        game.makeMove(playerOneMove);
+
+        PlayerMove playerTwoMove = new PlayerMove(p2, Move.ROCK);
+        game.makeMove(playerTwoMove);
+
+        Player p3 = new Player("p3");
+        assertThrows(GameEndedException.class, () -> game.joinGame(p3));
+    }
+
+    @Test
+    void testJoinGame_AfterGameFull_ThrowsGameFullException() {
+        game.joinGame(p2);
+        Player p3 = new Player("p3");
+        assertThrows(GameFullException.class, () -> game.joinGame(p3));
+    }
+
+    @Test
+    void testMakeMove_ByPlayerNotInGame_ThrowsPlayerNotInGameException() {
+        game.joinGame(p2);
+        Player p3 = new Player("p3");
+        PlayerMove playerThreeMove = new PlayerMove(p3, Move.PAPER);
+        assertThrows(PlayerNotInGameException.class, () -> game.makeMove(playerThreeMove));
     }
 }
