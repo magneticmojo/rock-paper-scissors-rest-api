@@ -5,6 +5,11 @@ import com.magneticmojo.rpsapi.api.state.GameState;
 
 import java.util.UUID;
 
+/**
+ * The RockPaperScissorsGame class encapsulates the state and operations of a Rock-Paper-Scissors game.
+ * Each instance of this class represents a unique game, identified by a random UUID.
+ * It handles player joining and move making, delegating the actual behavior to its current GameState.
+ */
 public class RockPaperScissorsGame {
 
     private GameState gameState;
