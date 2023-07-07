@@ -2,7 +2,6 @@ package com.magneticmojo.rpsapi.api.model.entities;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.validation.annotation.Validated;
 /**
  * A record that represents a move made by a player in the game.
  * It includes a player entity and the move made.

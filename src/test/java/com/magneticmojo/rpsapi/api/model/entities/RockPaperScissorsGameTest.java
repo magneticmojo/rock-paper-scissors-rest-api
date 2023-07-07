@@ -57,8 +57,11 @@ public class RockPaperScissorsGameTest {
 
         PlayerMove playerTwoMove = new PlayerMove(p2, Move.ROCK);
         GameState state = game.makeMove(playerTwoMove);
+
+        String tie = "TIE: " + playerOneMove.move().name() + " vs " + playerTwoMove.move().name();
+
         assertEquals(state.getClass(), GameEndedState.class);
-        assertEquals("TIE", ((GameEndedState) state).gameResult());
+        assertEquals(tie, ((GameEndedState) state).gameResult());
 
     }
 
