@@ -6,6 +6,12 @@ import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.PlayerOneJoinedStateSerializer;
 
+/**
+ * The PlayerOneJoinedState class represents the game state when only the first player has joined a game of Rock-Paper-Scissors.
+ * It allows the second player to join the game, but prohibits moves until the game is fully populated.
+ * Duplicate player names are managed by appending a suffix to the second player's name.
+ * The class implements the GameState interface, thus representing a concrete state of the State Pattern.
+ */
 @JsonSerialize(using = PlayerOneJoinedStateSerializer.class)
 public record PlayerOneJoinedState(Player playerOne) implements GameState {
 

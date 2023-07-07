@@ -9,10 +9,16 @@ import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.serialization.FirstMoveMadeAwaitingLastMoveStateSerializer;
 
+/**
+ * The FirstMoveMadeAwaitingLastMoveState class represents the game state after the first player has made a move,
+ * and the game is waiting for the second player's move. The class handles the game logic and checks for invalid operations.
+ * Any further attempt to join the game or a duplicate move from the same player will result in an exception.
+ * The class implements the GameState interface, thus representing a concrete state of the State Pattern.
+ */
 @JsonSerialize(using = FirstMoveMadeAwaitingLastMoveStateSerializer.class)
 public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
                                                  Player playerTwo,
-                                                 PlayerMove firstPlayerMove) implements GameState { // TODO @TEST
+                                                 PlayerMove firstPlayerMove) implements GameState {
 
     @Override
     public GameState joinGame(Player player) {
@@ -52,7 +58,7 @@ public record FirstMoveMadeAwaitingLastMoveState(Player playerOne,
         } else if (firstMove.isWinnerAgainst(lastMove)) {
             return generateVictoryMessage(firstPlayerMove.player(), lastPlayerMove.player(), firstMove, lastMove);
         } else {
-            return generateVictoryMessage(lastPlayerMove.player(), firstPlayerMove.player(),lastMove, firstMove);
+            return generateVictoryMessage(lastPlayerMove.player(), firstPlayerMove.player(), lastMove, firstMove);
         }
     }
 
