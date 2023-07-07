@@ -49,7 +49,7 @@ public class RockPaperScissorsGameTest {
     }
 
     @Test
-    void testGameFlowResultsInTie() {
+    void testGameFlow_resultsInTie() {
         game.joinGame(p2);
 
         PlayerMove playerOneMove = new PlayerMove(p1, Move.ROCK);
@@ -66,7 +66,7 @@ public class RockPaperScissorsGameTest {
     }
 
     @Test
-    void testGameFlowResultsInPLayerTwoWins() {
+    void testGameFlow_resultsInPLayerTwoWins() {
         game.joinGame(p2);
 
         PlayerMove playerOneMove = new PlayerMove(p1, Move.ROCK);

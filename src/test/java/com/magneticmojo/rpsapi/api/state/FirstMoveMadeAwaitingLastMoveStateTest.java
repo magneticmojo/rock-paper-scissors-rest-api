@@ -26,26 +26,26 @@ class FirstMoveMadeAwaitingLastMoveStateTest {
     }
 
     @Test
-    void testJoinGameException() {
+    void testJoinGame_GameFullException() {
         Player playerThree = new Player("player3");
         assertThrows(GameFullException.class, () -> firstMoveMadeAwaitingLastMoveState.joinGame(playerThree));
     }
 
     @Test
-    void testMakeMoveWithPlayerNotInGame() {
+    void testMakeMove_withPlayerNotInGame() {
         Player playerThree = new Player("player3");
         PlayerMove playerThreeMove = new PlayerMove(playerThree, Move.ROCK);
         assertThrows(PlayerException.class, () -> firstMoveMadeAwaitingLastMoveState.makeMove(playerThreeMove));
     }
 
     @Test
-    void testMakeMoveWithPlayerAlreadyMadeMove() {
+    void testMakeMove_withPlayerAlreadyMadeMove() {
         PlayerMove duplicatePlayerMove = new PlayerMove(playerOne, Move.PAPER);
         assertThrows(PlayerException.class, () -> firstMoveMadeAwaitingLastMoveState.makeMove(duplicatePlayerMove));
     }
 
     @Test
-    void testMakeMoveWithValidMove() {
+    void testMakeMove_withValidMove() {
         PlayerMove validPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
         GameState gameResult = firstMoveMadeAwaitingLastMoveState.makeMove(validPlayerMove);
 

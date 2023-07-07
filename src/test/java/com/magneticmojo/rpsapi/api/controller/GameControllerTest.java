@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -24,20 +23,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GameController.class)
-@AutoConfigureMockMvc
 public class GameControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
 
     @MockBean
     private GameService gameService;
 
     private Player playerOne;
     private PlayerMove firstPlayerMove;
+
+    GameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+    }
 
     @BeforeEach
     public void setUp() {
@@ -123,7 +123,7 @@ public class GameControllerTest {
 
 
     @Test
-    public void testJoinGame() throws Exception {
+    public void testJoinGame_returnStatusOK() throws Exception {
         String gameId = "gameId";
         GameState gameState = new PlayerTwoJoinedState(playerOne, new Player("playerTwo"));
         Mockito.when(gameService.joinGame(gameId, playerOne)).thenReturn(gameState);
@@ -135,7 +135,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testMakeMove() throws Exception {
+    public void testMakeMove_returnStatusOK() throws Exception {
         String gameId = "gameId";
         GameState gameState = new FirstMoveMadeAwaitingLastMoveState(playerOne, new Player("playerTwo"), firstPlayerMove);
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenReturn(gameState);
@@ -193,6 +193,4 @@ public class GameControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value("Player is not in the game."));
     }
-
-
 }
