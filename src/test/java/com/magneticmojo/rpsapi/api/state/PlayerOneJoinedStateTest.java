@@ -8,6 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the PlayerOneJoinedState class.
+ * <p>
+ * These tests validate the behavior of the PlayerOneJoinedState class,
+ * specifically testing the joining of a player to the game and making
+ * moves when only one player has joined.
+ */
 public class PlayerOneJoinedStateTest {
 
     @Test

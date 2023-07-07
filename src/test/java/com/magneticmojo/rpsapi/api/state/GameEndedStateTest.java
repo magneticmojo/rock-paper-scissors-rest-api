@@ -8,6 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the GameEndedState class.
+ * <p>
+ * These tests validate the behavior of the GameEndedState class,
+ * testing the handling of joining a game and making moves when the game has ended.
+ */
 public class GameEndedStateTest {
 
     @Test

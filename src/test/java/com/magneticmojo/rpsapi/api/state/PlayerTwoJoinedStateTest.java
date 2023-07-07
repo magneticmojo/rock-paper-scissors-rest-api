@@ -9,6 +9,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the PlayerTwoJoinedState class.
+ * <p>
+ * These tests validate the behavior of the PlayerTwoJoinedState class,
+ * specifically testing the joining of a player to the game (which should
+ * throw a GameFullException), and making moves when both players have joined
+ * the game (resulting in transitioning to the FirstMoveMadeAwaitingLastMoveState).
+ * Additionally, a test is included to verify that making a move with a player
+ * not in the game throws a PlayerNotInGameException.
+ */
 public class PlayerTwoJoinedStateTest {
 
     @Test
