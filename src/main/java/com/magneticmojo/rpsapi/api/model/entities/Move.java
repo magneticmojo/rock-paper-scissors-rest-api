@@ -2,12 +2,12 @@ package com.magneticmojo.rpsapi.api.model.entities;
 
 /**
  * Enum representing the moves in the game of Rock, Paper, Scissors.
- *
+ * <p>
  * The order of the constants (ROCK, PAPER, SCISSORS) is critical for the game's logic. The order follows
  * the game's traditional rules: ROCK beats SCISSORS, SCISSORS beat PAPER, and PAPER beats ROCK.
- *
+ * <p>
  * Do not change the order of these constants as it will impact the game logic.
- *
+ * <p>
  * Each move can calculate whether it wins against or is tied with another move.
  */
 public enum Move {
