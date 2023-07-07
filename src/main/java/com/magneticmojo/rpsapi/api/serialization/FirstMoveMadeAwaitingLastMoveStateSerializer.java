@@ -7,6 +7,11 @@ import com.magneticmojo.rpsapi.api.state.FirstMoveMadeAwaitingLastMoveState;
 
 import java.io.IOException;
 
+/**
+ * Serializer class for converting the FirstMoveMadeAwaitingLastMoveState object to JSON format.
+ * This class extends the StdSerializer class and is specifically designed to handle the serialization
+ * of the FirstMoveMadeAwaitingLastMoveState class.
+ */
 public class FirstMoveMadeAwaitingLastMoveStateSerializer extends StdSerializer<FirstMoveMadeAwaitingLastMoveState> {
 
     public FirstMoveMadeAwaitingLastMoveStateSerializer() {

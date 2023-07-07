@@ -7,6 +7,11 @@ import com.magneticmojo.rpsapi.api.state.PlayerTwoJoinedState;
 
 import java.io.IOException;
 
+/**
+ * Serializer class for converting the PlayerTwoJoinedState object to JSON format.
+ * This class extends the StdSerializer class and is specifically designed to handle the serialization
+ * of the PlayerTwoJoinedState class.
+ */
 public class PlayerTwoJoinedStateSerializer extends StdSerializer<PlayerTwoJoinedState> {
 
     public PlayerTwoJoinedStateSerializer() {

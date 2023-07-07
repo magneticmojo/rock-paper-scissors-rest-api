@@ -7,6 +7,11 @@ import com.magneticmojo.rpsapi.api.state.GameEndedState;
 
 import java.io.IOException;
 
+/**
+ * Serializer class for converting the GameEndedState object to JSON format.
+ * This class extends the StdSerializer class and is specifically designed to handle the serialization
+ * of the GameEndedState class.
+ */
 public class GameEndedStateSerializer extends StdSerializer<GameEndedState> {
 
     public GameEndedStateSerializer() {
