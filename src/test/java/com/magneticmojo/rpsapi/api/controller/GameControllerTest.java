@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GameController.class)
-public class GameControllerTest {
+public class GameControllerTest { // TODO CHECK
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;

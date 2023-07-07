@@ -6,7 +6,6 @@ import com.magneticmojo.rpsapi.api.model.entities.Player;
 import com.magneticmojo.rpsapi.api.model.entities.PlayerMove;
 import com.magneticmojo.rpsapi.api.model.entities.RockPaperScissorsGame;
 import com.magneticmojo.rpsapi.api.repository.GameRepository;
-import com.magneticmojo.rpsapi.api.service.GameService;
 import com.magneticmojo.rpsapi.api.state.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

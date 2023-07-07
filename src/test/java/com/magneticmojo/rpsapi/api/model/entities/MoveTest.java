@@ -4,7 +4,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MoveTest {
+/**
+ * Unit tests for the Move class.
+ * <p>
+ * These tests validate the behavior of the Move class, specifically
+ * checking the rules of the Rock-Paper-Scissors game:
+ * - Rock beats Scissors
+ * - Paper beats Rock
+ * - Scissors beats Paper
+ * <p>
+ * The tests also include checks for moves that result in a tie.
+ * <p>
+ * Additionally, the tests ensure that the enum values of Move
+ * are in the correct order: ROCK, PAPER, SCISSORS.
+ */
+public class MoveTest {
 
     @Test
     void testRockBeatsScissors() {
@@ -34,4 +48,10 @@ class MoveTest {
         assertTrue(Move.SCISSORS.isTied(Move.SCISSORS));
     }
 
+    @Test
+    void correctEnumOrder() {
+        assertEquals(0, Move.ROCK.ordinal());
+        assertEquals(1, Move.PAPER.ordinal());
+        assertEquals(2, Move.SCISSORS.ordinal());
+    }
 }

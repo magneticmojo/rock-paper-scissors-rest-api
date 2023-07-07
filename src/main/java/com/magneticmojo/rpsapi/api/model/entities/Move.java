@@ -7,6 +7,7 @@ package com.magneticmojo.rpsapi.api.model.entities;
  * the game's traditional rules: ROCK beats SCISSORS, SCISSORS beat PAPER, and PAPER beats ROCK.
  * <p>
  * Do not change the order of these constants as it will impact the game logic.
+ * MoveTest.java contains a test for asserting the correct order.
  * <p>
  * Each move can calculate whether it wins against or is tied with another move.
  */
