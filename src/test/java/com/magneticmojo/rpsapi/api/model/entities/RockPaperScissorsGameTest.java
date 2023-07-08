@@ -37,17 +37,22 @@ public class RockPaperScissorsGameTest {
         GameState state1 = game.getState();
         assertEquals(state1.getClass(), PlayerOneJoinedState.class);
 
-        GameState state2 = game.joinGame(p2);
+        game.joinGame(p2);
+        GameState state2 = game.getState();
+
         assertEquals(state2.getClass(), PlayerTwoJoinedState.class);
         assertNotEquals(state1, state2);
 
         PlayerMove playerOneMove = new PlayerMove(p1, Move.ROCK);
-        GameState state3 = game.makeMove(playerOneMove);
+        game.makeMove(playerOneMove);
+        GameState state3 = game.getState();
         assertEquals(state3.getClass(), FirstMoveMadeAwaitingLastMoveState.class);
         assertNotEquals(state2, state3);
 
         PlayerMove playerTwoMove = new PlayerMove(p2, Move.ROCK);
-        GameState state4 = game.makeMove(playerTwoMove);
+        game.makeMove(playerTwoMove);
+        GameState state4 = game.getState();
+
         assertNotEquals(state3, state4);
         assertEquals(state4.getClass(), GameEndedState.class);
     }
@@ -68,7 +73,8 @@ public class RockPaperScissorsGameTest {
         game.makeMove(playerOneMove);
 
         PlayerMove playerTwoMove = new PlayerMove(p2, Move.ROCK);
-        GameState state = game.makeMove(playerTwoMove);
+        game.makeMove(playerTwoMove);
+        GameState state = game.getState();
 
         String tie = "TIE: " + playerOneMove.move().name() + " vs " + playerTwoMove.move().name();
 
@@ -85,7 +91,8 @@ public class RockPaperScissorsGameTest {
         game.makeMove(playerOneMove);
 
         PlayerMove playerTwoMove = new PlayerMove(p2, Move.PAPER);
-        GameState state = game.makeMove(playerTwoMove);
+        game.makeMove(playerTwoMove);
+        GameState state = game.getState();
 
         String gameResult = p2.name() + " won by " + Move.PAPER + " beating " + Move.ROCK + ". " + p1.name() + " lost";
         assertEquals(state.getClass(), GameEndedState.class);

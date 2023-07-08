@@ -34,12 +34,14 @@ public class GameService {
 
     public GameState joinGame(String id, Player playerTwo) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
-        return rpsGame.joinGame(playerTwo);
+        rpsGame.joinGame(playerTwo);
+        return rpsGame.getState();
     }
 
     public GameState makeMove(String id, PlayerMove playerMove) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
-        return rpsGame.makeMove(playerMove);
+        rpsGame.makeMove(playerMove);
+        return rpsGame.getState();
     }
 
     private RockPaperScissorsGame getGameOrElseThrow(String id) {

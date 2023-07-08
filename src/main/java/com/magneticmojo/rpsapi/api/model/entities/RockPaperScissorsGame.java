@@ -28,13 +28,17 @@ public class RockPaperScissorsGame {
         return gameState;
     }
 
-    public GameState joinGame(Player playerTwo) {
-        gameState = gameState.joinGame(playerTwo);
-        return gameState;
+    private void setState(GameState gameState) {
+
+
+        this.gameState = gameState;
     }
 
-    public GameState makeMove(PlayerMove playerMove) {
+    public void joinGame(Player playerTwo) {
+        gameState = gameState.joinGame(playerTwo);
+    }
+
+    public void makeMove(PlayerMove playerMove) {
         gameState = gameState.makeMove(playerMove);
-        return gameState;
     }
 }

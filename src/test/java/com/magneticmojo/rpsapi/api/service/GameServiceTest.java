@@ -64,13 +64,16 @@ public class GameServiceTest {
         GameState mockState = mock(GameState.class);
         Player mockPlayer = mock(Player.class);
         when(gameRepository.getGame(anyString())).thenReturn(mockGame);
-        when(mockGame.joinGame(mockPlayer)).thenReturn(mockState);
+        when(mockGame.getState()).thenReturn(mockState);
 
-        GameState resultState = gameService.joinGame(TEST_GAME_ID, mockPlayer);
+        gameService.joinGame(TEST_GAME_ID, mockPlayer);
 
-        assertEquals(mockState, resultState);
         verify(gameRepository, times(1)).getGame(TEST_GAME_ID);
         verify(mockGame, times(1)).joinGame(mockPlayer);
+        verify(mockGame, times(1)).getState();
+
+        GameState resultState = gameService.getGameState(TEST_GAME_ID);
+        assertEquals(mockState, resultState);
     }
 
     @Test
@@ -79,14 +82,18 @@ public class GameServiceTest {
         GameState mockState = mock(GameState.class);
         PlayerMove mockMove = mock(PlayerMove.class);
         when(gameRepository.getGame(anyString())).thenReturn(mockGame);
-        when(mockGame.makeMove(mockMove)).thenReturn(mockState);
+        when(mockGame.getState()).thenReturn(mockState);
 
-        GameState resultState = gameService.makeMove(TEST_GAME_ID, mockMove);
+        gameService.makeMove(TEST_GAME_ID, mockMove);
 
-        assertEquals(mockState, resultState);
         verify(gameRepository, times(1)).getGame(TEST_GAME_ID);
         verify(mockGame, times(1)).makeMove(mockMove);
+        verify(mockGame, times(1)).getState();
+
+        GameState resultState = gameService.getGameState(TEST_GAME_ID);
+        assertEquals(mockState, resultState);
     }
+
 
     @Test
     void testGetGameState_whenGameDoesNotExist_thenThrowsGameNotFoundException() {
