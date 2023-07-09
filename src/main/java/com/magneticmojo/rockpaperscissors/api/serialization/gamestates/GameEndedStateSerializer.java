@@ -26,12 +26,12 @@ public class GameEndedStateSerializer extends StdSerializer<GameEndedState> {
             throws IOException {
 
         gen.writeStartObject();
-        gen.writeStringField("message", "Game ended");
+        gen.writeStringField("gameState", "Game ended");
+        gen.writeStringField("gameResult", state.getGameResult());
         gen.writeStringField("playerOne", state.getPlayerOne().name());
         gen.writeStringField("playerTwo", state.getPlayerTwo().name());
         gen.writeStringField("firstMoveBy", state.getFirstPlayerMove().player().name() + " (" + state.getFirstPlayerMove().move().name() + ")");
         gen.writeStringField("lastMoveBy", state.getLastPlayerMove().player().name() + " (" + state.getLastPlayerMove().move().name() + ")");
-        gen.writeStringField("gameResult", state.getGameResult());
         gen.writeEndObject();
     }
 }

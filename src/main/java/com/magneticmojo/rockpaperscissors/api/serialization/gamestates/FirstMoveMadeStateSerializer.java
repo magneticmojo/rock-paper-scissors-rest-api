@@ -26,7 +26,7 @@ public class FirstMoveMadeStateSerializer extends StdSerializer<FirstMoveMadeSta
             throws IOException {
 
         gen.writeStartObject();
-        gen.writeStringField("message", state.getFirstPlayerMove().player().name() + " made the first move");
+        gen.writeStringField("gameState", "First move made");
         gen.writeStringField("playerOne", state.getPlayerOne().name());
         gen.writeStringField("playerTwo", state.getPlayerTwo().name());
         gen.writeStringField("firstMoveBy", state.getFirstPlayerMove().player().name());

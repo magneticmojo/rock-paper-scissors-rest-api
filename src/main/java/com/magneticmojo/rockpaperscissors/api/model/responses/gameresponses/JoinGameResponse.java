@@ -5,5 +5,5 @@ import com.magneticmojo.rockpaperscissors.api.serialization.responses.JoinGameRe
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 
 @JsonSerialize(using = JoinGameResponseSerializer.class)
-public record JoinGameResponse(String id, Player player) {
+public record JoinGameResponse(Player player) {
 }

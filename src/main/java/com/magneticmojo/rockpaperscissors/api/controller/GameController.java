@@ -57,7 +57,7 @@ public class GameController {
     @PatchMapping("/{id}/join")
     public ResponseEntity<JoinGameResponse> joinGame(@PathVariable String id, @RequestBody @Validated Player playerTwo) {
         PlayerTwoJoinedState gameState = (PlayerTwoJoinedState) rockPaperScissorsGameService.joinGame(id, playerTwo);
-        JoinGameResponse response = new JoinGameResponse(id, gameState.getPlayerTwo());
+        JoinGameResponse response = new JoinGameResponse(gameState.getPlayerTwo());
         return ResponseEntity.ok(response);
     }
 
@@ -67,11 +67,11 @@ public class GameController {
 
         MakeMoveResponse response = null;
         if (gameState instanceof FirstMoveMadeState) {
-            response = new MakeMoveResponse(id, ((FirstMoveMadeState) gameState).getFirstPlayerMove(), "First");
+            response = new MakeMoveResponse(((FirstMoveMadeState) gameState).getFirstPlayerMove(), "First");
         }
 
         if (gameState instanceof GameEndedState) {
-            response = new MakeMoveResponse(id, ((GameEndedState) gameState).getLastPlayerMove(), "Last");
+            response = new MakeMoveResponse(((GameEndedState) gameState).getLastPlayerMove(), "Last");
         }
 
         return ResponseEntity.ok(response);

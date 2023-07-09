@@ -19,7 +19,6 @@ public class JoinGameResponseSerializer extends StdSerializer<JoinGameResponse> 
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("message", "Player two joined");
         jsonGenerator.writeStringField("playerTwo", joinGameResponse.player().name());
-        jsonGenerator.writeStringField("gameID", joinGameResponse.id());
         jsonGenerator.writeEndObject();
     }
 }

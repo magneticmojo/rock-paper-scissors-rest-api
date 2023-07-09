@@ -5,5 +5,5 @@ import com.magneticmojo.rockpaperscissors.api.serialization.responses.MakeMoveRe
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
 
 @JsonSerialize(using = MakeMoveResponseSerializer.class)
-public record MakeMoveResponse(String id, PlayerMove playerMove, String movePosition) {
+public record MakeMoveResponse(PlayerMove playerMove, String movePosition) {
 }
