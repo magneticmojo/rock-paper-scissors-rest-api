@@ -6,7 +6,7 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.except
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNotInGameException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.serialization.FirstMoveMadeStateSerializer;
+import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.FirstMoveMadeStateSerializer;
 
 /**
  * The FirstMoveMadeState class represents the game state after the first player has made a move,

@@ -5,7 +5,7 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.except
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Move;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.serialization.GameEndedStateSerializer;
+import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.GameEndedStateSerializer;
 
 /**
  * The GameEndedState class represents the final game state when a game of Rock-Paper-Scissors has concluded.

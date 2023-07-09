@@ -5,7 +5,7 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.except
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNotInGameException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.serialization.PlayerTwoJoinedStateSerializer;
+import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.PlayerTwoJoinedStateSerializer;
 
 /**
  * The PlayerTwoJoinedState class represents the game state when both players have joined a Rock-Paper-Scissors game.

@@ -1,13 +1,14 @@
 package com.magneticmojo.rockpaperscissors.api.controller;
 
-import com.magneticmojo.rockpaperscissors.api.model.responses.GameStateResponse;
-import com.magneticmojo.rockpaperscissors.api.model.responses.MoveResponse;
+import com.magneticmojo.rockpaperscissors.api.model.requests.MakeMoveRequest;
+import com.magneticmojo.rockpaperscissors.api.model.requests.PlayerRequest;
+import com.magneticmojo.rockpaperscissors.api.model.responses.JoinGameResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.MakeMoveResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.RockPaperScissorsGameService;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.model.responses.GameCreatedResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.CreateGameResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.FirstMoveMadeState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.GameEndedState;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.PlayerTwoJoinedState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
  * <p>
  * All the API responses are encapsulated in ResponseEntity objects with HTTP status codes.
  */
+
+// TODO id -> gameId??? Känns tydligare
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
@@ -37,41 +40,48 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<GameCreatedResponse> createGame(@RequestBody @Validated Player playerOne) { // TODO PlayerRequest
-        String id = rockPaperScissorsGameService.createGame(playerOne); // TODO SKA SERVICE SKAPA RESPONSE? ELLER CONTROLLER?
-        GameCreatedResponse response = new GameCreatedResponse("Rock-Papper-Scissors game created", id);
+    public ResponseEntity<CreateGameResponse> createGame(@RequestBody @Validated PlayerRequest playerRequest) {
+
+         // TODO REQUEST OBJECT PlayerRequest
+        String id = rockPaperScissorsGameService.createGame(playerRequest.name());
+
+        // TODO Serializer -> CreateGameResponse
+        // TODO @NotNull needed?
+        CreateGameResponse response = new CreateGameResponse(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RockPaperScissorsGameState> getGameState(@PathVariable String id) {
         RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.getGameState(id);
-        return ResponseEntity.ok(rockPaperScissorsGameState);
+
+        // TODO RESPONSE OBJEKT -> Men för olika states?????
+        return ResponseEntity.status(HttpStatus.OK).body(rockPaperScissorsGameState);
     }
 
-    @PatchMapping("/{id}/join")
-    public ResponseEntity<RockPaperScissorsGameState> joinGame(@PathVariable String id, @RequestBody @Validated Player playerTwo) { // TODO PlayerRequest
-        RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.joinGame(id, playerTwo);
-
-
-
-        return ResponseEntity.ok(rockPaperScissorsGameState);
+    @PatchMapping("/{id}/join") // (todo) DONE!
+    public ResponseEntity<JoinGameResponse> joinGame(@PathVariable String id, @RequestBody @Validated PlayerRequest playerRequest) {
+        PlayerTwoJoinedState playerTwoJoinedState = (PlayerTwoJoinedState) rockPaperScissorsGameService.joinGame(id, playerRequest.name());
+        JoinGameResponse joinGameResponse = new JoinGameResponse(playerTwoJoinedState.getPlayerTwo(), "Two", id);
+        return ResponseEntity.ok(joinGameResponse);
     }
 
     @PatchMapping("/{id}/move")
-    public ResponseEntity<MoveResponse> makeMove(@PathVariable String id, @RequestBody @Validated PlayerMove playerMove) { // TODO PlayerMoveRequest
-        RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.makeMove(id, playerMove);
+    public ResponseEntity<MakeMoveResponse> makeMove(@PathVariable String id, @RequestBody @Validated MakeMoveRequest makeMoveRequest) {
+        // TODO Nested validation
+        // TODO -> VAR SKA VALIDERINGEN SKE?
 
-        // Move Response --> FirstMoveMadeState
-        MoveResponse moveResponse = null;
+        RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.makeMove(id, makeMoveRequest.playerName(), makeMoveRequest.move());
+
+        MakeMoveResponse makeMoveResponse = null;
         if (rockPaperScissorsGameState instanceof FirstMoveMadeState) {
-            moveResponse = new MoveResponse(((FirstMoveMadeState) rockPaperScissorsGameState).getFirstPlayerMove(), "First");
+            makeMoveResponse = new MakeMoveResponse(((FirstMoveMadeState) rockPaperScissorsGameState).getFirstPlayerMove(), "First", id);
         }
 
         if (rockPaperScissorsGameState instanceof GameEndedState) {
-            moveResponse = new MoveResponse(((GameEndedState) rockPaperScissorsGameState).getLastPlayerMove(), "Last");
+            makeMoveResponse = new MakeMoveResponse(((GameEndedState) rockPaperScissorsGameState).getLastPlayerMove(), "Last", id);
         }
 
-        return ResponseEntity.ok(moveResponse);
+        return ResponseEntity.ok(makeMoveResponse);
     }
 }

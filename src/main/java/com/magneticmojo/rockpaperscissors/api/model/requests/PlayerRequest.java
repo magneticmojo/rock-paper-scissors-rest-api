@@ -1,4 +1,6 @@
 package com.magneticmojo.rockpaperscissors.api.model.requests;
 
-public class PlayerRequest { // TODO IMPLEMENT AND USE
+import jakarta.validation.constraints.NotBlank;
+
+public record PlayerRequest(@NotBlank String name) {
 }

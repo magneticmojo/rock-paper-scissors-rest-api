@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.MissingPlayerTwoException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.serialization.PlayerOneJoinedStateSerializer;
+import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.PlayerOneJoinedStateSerializer;
 
 /**
  * The PlayerOneJoinedState class represents the game state when only the first player has joined a game of Rock-Paper-Scissors.

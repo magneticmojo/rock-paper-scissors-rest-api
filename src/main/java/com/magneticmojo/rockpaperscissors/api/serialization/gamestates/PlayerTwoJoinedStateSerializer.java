@@ -1,4 +1,4 @@
-package com.magneticmojo.rockpaperscissors.api.serialization;
+package com.magneticmojo.rockpaperscissors.api.serialization.gamestates;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
