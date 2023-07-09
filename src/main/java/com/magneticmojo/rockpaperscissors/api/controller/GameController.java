@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 /**
  * GameController is the REST API controller for the Rock-Paper-Scissors game. It handles all incoming HTTP requests.
@@ -39,23 +42,23 @@ public class GameController {
         this.rockPaperScissorsGameService = rockPaperScissorsGameService;
     }
 
+    // TODO Serializer -> CreateGameResponse
+    // TODO @NotNull needed?
+     // TODO REQUEST OBJECT --> CreateGameRequest!!!!
     @PostMapping
     public ResponseEntity<CreateGameResponse> createGame(@RequestBody @Validated PlayerRequest playerRequest) {
 
-         // TODO REQUEST OBJECT PlayerRequest
         String id = rockPaperScissorsGameService.createGame(playerRequest.name());
 
-        // TODO Serializer -> CreateGameResponse
-        // TODO @NotNull needed?
         CreateGameResponse response = new CreateGameResponse(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(id).toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RockPaperScissorsGameState> getGameState(@PathVariable String id) {
         RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.getGameState(id);
-
-        // TODO RESPONSE OBJEKT -> Men för olika states?????
         return ResponseEntity.status(HttpStatus.OK).body(rockPaperScissorsGameState);
     }
 

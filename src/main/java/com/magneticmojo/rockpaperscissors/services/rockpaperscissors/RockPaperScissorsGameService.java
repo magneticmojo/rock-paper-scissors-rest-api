@@ -44,7 +44,7 @@ public class RockPaperScissorsGameService {
 
     public RockPaperScissorsGameState makeMove(String id, String playerName, String move) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
-        PlayerMove playerMove = new PlayerMove(new Player(playerName), Move.valueOf(move.toUpperCase()));
+        PlayerMove playerMove = new PlayerMove(new Player(playerName), Move.valueOf(move));
         rpsGame.makeMove(playerMove);
         return rpsGame.getState();
     }
