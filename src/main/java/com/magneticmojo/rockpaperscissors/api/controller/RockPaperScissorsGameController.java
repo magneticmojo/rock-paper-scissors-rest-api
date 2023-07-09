@@ -18,7 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 /**
- * GameController is the REST API controller for the Rock-Paper-Scissors game. It handles all incoming HTTP requests.
+ * RockPaperScissorsGameController is the REST API controller for the Rock-Paper-Scissors game. It handles all incoming HTTP requests.
  * The controller delegates the processing of these requests to the RockPaperScissorsGameService.
  * <p>
  * Endpoints include:
@@ -31,11 +31,11 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api/games")
-public class GameController {
+public class RockPaperScissorsGameController {
 
     private final RockPaperScissorsGameService rockPaperScissorsGameService;
 
-    public GameController(RockPaperScissorsGameService rockPaperScissorsGameService) {
+    public RockPaperScissorsGameController(RockPaperScissorsGameService rockPaperScissorsGameService) {
         this.rockPaperScissorsGameService = rockPaperScissorsGameService;
     }
 

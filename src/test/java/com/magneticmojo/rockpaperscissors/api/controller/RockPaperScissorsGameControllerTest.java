@@ -28,18 +28,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * This is a test class for the GameController class.
- * It aims to verify the behavior of the GameController class by using mock implementations
+ * This is a test class for the RockPaperScissorsGameController class.
+ * It aims to verify the behavior of the RockPaperScissorsGameController class by using mock implementations
  * of the dependent classes and the MockMvc testing framework.
- * It covers all public API endpoints exposed by GameController such as creating a new game, joining an existing game,
+ * It covers all public API endpoints exposed by RockPaperScissorsGameController such as creating a new game, joining an existing game,
  * making a move in the game, and retrieving the current game state.
  * It tests various possible states of the game, ensuring the correctness of the controller
  * in different situations such as a game is full, a player making multiple moves, and a player who is not in the game.
  */
 
 // TODO MIXING OF PLAYERONE AND PLAYERTWO
-@WebMvcTest(GameController.class)
-public class GameControllerTest {
+@WebMvcTest(RockPaperScissorsGameController.class)
+public class RockPaperScissorsGameControllerTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -53,7 +53,7 @@ public class GameControllerTest {
     private PlayerMove lastPlayerMove;
     private String gameId;
 
-    GameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
+    RockPaperScissorsGameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }

@@ -4,8 +4,14 @@ package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.excep
  * Exception thrown when a game has already ended.
  * Inherits from the GameException class.
  */
-public class GameEndedException extends RuntimeException {
+public class GameEndedException extends RockPaperScissorsGameException {
+
     public GameEndedException(String errorMessage) {
         super(errorMessage);
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "GAME_ENDED";
     }
 }

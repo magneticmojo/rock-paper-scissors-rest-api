@@ -4,8 +4,14 @@ package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.excep
  * Exception thrown when a game is already full.
  * Inherits from the GameException class.
  */
-public class GameFullException extends RuntimeException {
+public class GameFullException extends RockPaperScissorsGameException {
+
     public GameFullException(String errorMessage) {
         super(errorMessage);
+    }
+
+    @Override
+    public String getErrorCode() {
+        return "GAME_FULL";
     }
 }
