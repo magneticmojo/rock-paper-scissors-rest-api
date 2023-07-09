@@ -23,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * in different situations such as a game is full, a player making multiple moves, and a player who is not in the game.
  */
 
-// TODO MIXING OF PLAYERONE AND PLAYERTWO
 @WebMvcTest(RockPaperScissorsGameController.class)
 public class RockPaperScissorsGameControllerTest {
 
@@ -51,7 +50,7 @@ public class RockPaperScissorsGameControllerTest {
     private PlayerMove firstPlayerMove;
     private Player playerTwo;
     private PlayerMove lastPlayerMove;
-    private String gameId;
+    private String gameId = "bf4422fe-f78a-4625-acdb-711db7838f99";
 
     RockPaperScissorsGameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
@@ -66,17 +65,62 @@ public class RockPaperScissorsGameControllerTest {
         lastPlayerMove = new PlayerMove(playerTwo, Move.PAPER);
     }
 
+    // create game tests **********************************************************************************************************************
+
     @Test
-    public void testCreateGame() throws Exception {
-        CreateGameResponse createGameResponse = new CreateGameResponse("gameId", playerOne);
-        Mockito.when(rockPaperScissorsGameService.createGame(playerOne)).thenReturn(createGameResponse.id());
+    public void testCreateGameWithCorrectPlayer() throws Exception {
+        CreateGameResponse response = new CreateGameResponse(gameId, playerOne);
+        Mockito.when(rockPaperScissorsGameService.createGame(playerOne)).thenReturn(response.id());
 
         mockMvc.perform(post("/api/games")
                         .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.gameId").value(createGameResponse.id()));
+                .andExpect(jsonPath("$.gameId").value(response.id()));
+
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).createGame(playerOne);
     }
+
+    @Test
+    public void testCreateGame_withNullPlayer_BadRequest() throws Exception {
+        Player player = new Player(null);
+
+        mockMvc.perform(post("/api/games")
+                        .content(objectMapper.writeValueAsString(player))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateGame_withEmptyPlayerName_BadRequest() throws Exception {
+        Player player = new Player("");
+
+        mockMvc.perform(post("/api/games")
+                        .content(objectMapper.writeValueAsString(player))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateGameCorrectState() throws Exception {
+        Player player = new Player("Test Player");
+        CreateGameResponse response = new CreateGameResponse(gameId, player);
+        Mockito.when(rockPaperScissorsGameService.createGame(player)).thenReturn(response.id());
+
+        mockMvc.perform(post("/api/games")
+                        .content(objectMapper.writeValueAsString(player))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.gameId").value(response.id()));
+
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).createGame(player);
+
+        RockPaperScissorsGameState gameState = rockPaperScissorsGameService.getGameState(response.id());
+        assertTrue(gameState instanceof PlayerOneJoinedState);
+    }
+
+
+    // get game state tests **********************************************************************************************************************
 
     @Test
     public void testGetGameState_PlayerOneJoined() throws Exception {
@@ -145,6 +189,8 @@ public class RockPaperScissorsGameControllerTest {
     }
 
 
+    // join game tests ************************************************************************************************************************
+
     @Test
     public void testJoinGame_returnStatusOK() throws Exception {
         String gameId = "gameId";
@@ -184,6 +230,9 @@ public class RockPaperScissorsGameControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorMessage").value("Game full. Cannot join game"));
     }
+
+
+    // make move tests ************************************************************************************************************************
 
     @Test
     public void testMakeMove_GameExceptionThrown() throws Exception {

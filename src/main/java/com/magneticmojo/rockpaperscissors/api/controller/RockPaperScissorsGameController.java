@@ -77,3 +77,30 @@ public class RockPaperScissorsGameController {
         return ResponseEntity.ok(response);
     }
 }
+
+// För alla endpoints --> Korrekt input & inkorrekt input
+// TODO POST:
+// TODO CREATE GAME --> Correct player NotBlank (no validation fail) + 201
+// TODO CREATE GAME --> Incorrect Input Null && Blank player name (Validation fail) + 400 (Bad Request) --> Vad ger @Validated
+// TODO CREATE GAME --> Correct Output
+// TODO CREATE GAME --> Correct State
+
+// TODO GET:
+// TODO GET GAME STATE --> Correct id (no validation fail) + 200
+// TODO GET GAME STATE --> Incorrect id -> GameNotFoundException + 404???
+// TODO GET GAME STATE --> Gamestate = PlayerOneJoinedState
+//
+// TODO PATCH (Join Game)
+// TODO JOIN GAME --> Correct Input (no validation fail) + 200
+// TODO JOIN GAME --> Incorrect Input - Null && Blank player name (Validation fail) + 400 (Bad Request) --> Vad ger @Validated
+// TODO JOIN GAME --> Incorrect id - GameNotFoundException + 404
+// TODO JOIN GAME --> Gamestate = PlayerTwoJoinedState
+
+// TODO PATCH (Make Move)
+// TODO MAKE MOVE --> Correct Input (no validation fail) + 200
+// TODO MAKE MOVE --> Incorrect Input - Null && Blank player name (Validation fail) + 400 (Bad Request) --> Vad ger @Validated
+// TODO MAKE MOVE --> PlayerMove = null --> ???
+// TODO MAKE MOVE --> PlayerMove = new PlayerMove(player, null) --> ???
+// TODO MAKE MOVE --> PlayerMove = new PlayerMove(player, Move.ROCK) --> ???
+// TODO MAKE MOVE --> Incorrect id - GameNotFoundException + 404
+// TODO MAKE MOVE --> Setup Create + Join --> Make Move --> Gamestate = FirstMoveMadeState --> Make Move --> Gamestate = GameEndedState
