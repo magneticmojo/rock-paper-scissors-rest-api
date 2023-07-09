@@ -1,9 +1,13 @@
 package com.magneticmojo.rockpaperscissors.api.controller;
 
+import com.magneticmojo.rockpaperscissors.api.model.responses.GameStateResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.MoveResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.RockPaperScissorsGameService;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
 import com.magneticmojo.rockpaperscissors.api.model.responses.GameCreatedResponse;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.FirstMoveMadeState;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.GameEndedState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +26,6 @@ import org.springframework.web.bind.annotation.*;
  * <p>
  * All the API responses are encapsulated in ResponseEntity objects with HTTP status codes.
  */
-
-// TODO CHANGE ENDPOINTS?? Ta bort id från join och move i path?
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
@@ -50,12 +52,26 @@ public class GameController {
     @PatchMapping("/{id}/join")
     public ResponseEntity<RockPaperScissorsGameState> joinGame(@PathVariable String id, @RequestBody @Validated Player playerTwo) { // TODO PlayerRequest
         RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.joinGame(id, playerTwo);
+
+
+
         return ResponseEntity.ok(rockPaperScissorsGameState);
     }
 
     @PatchMapping("/{id}/move")
-    public ResponseEntity<RockPaperScissorsGameState> makeMove(@PathVariable String id, @RequestBody @Validated PlayerMove playerMove) { // TODO PlayerMoveRequest
+    public ResponseEntity<MoveResponse> makeMove(@PathVariable String id, @RequestBody @Validated PlayerMove playerMove) { // TODO PlayerMoveRequest
         RockPaperScissorsGameState rockPaperScissorsGameState = rockPaperScissorsGameService.makeMove(id, playerMove);
-        return ResponseEntity.ok(rockPaperScissorsGameState);
+
+        // Move Response --> FirstMoveMadeState
+        MoveResponse moveResponse = null;
+        if (rockPaperScissorsGameState instanceof FirstMoveMadeState) {
+            moveResponse = new MoveResponse(((FirstMoveMadeState) rockPaperScissorsGameState).getFirstPlayerMove(), "First");
+        }
+
+        if (rockPaperScissorsGameState instanceof GameEndedState) {
+            moveResponse = new MoveResponse(((GameEndedState) rockPaperScissorsGameState).getLastPlayerMove(), "Last");
+        }
+
+        return ResponseEntity.ok(moveResponse);
     }
 }
