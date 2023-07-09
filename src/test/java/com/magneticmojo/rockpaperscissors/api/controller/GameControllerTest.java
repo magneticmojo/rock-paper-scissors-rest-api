@@ -7,7 +7,7 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.except
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Move;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
-import com.magneticmojo.rockpaperscissors.api.model.responses.CreateGameResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.gameresponses.CreateGameResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.GameEndedState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.PlayerOneJoinedState;
@@ -36,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * It tests various possible states of the game, ensuring the correctness of the controller
  * in different situations such as a game is full, a player making multiple moves, and a player who is not in the game.
  */
+
+// TODO MIXING OF PLAYERONE AND PLAYERTWO
 @WebMvcTest(GameController.class)
 public class GameControllerTest {
 
@@ -47,6 +49,9 @@ public class GameControllerTest {
 
     private Player playerOne;
     private PlayerMove firstPlayerMove;
+    private Player playerTwo;
+    private PlayerMove lastPlayerMove;
+    private String gameId;
 
     GameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
@@ -57,18 +62,20 @@ public class GameControllerTest {
     public void setUp() {
         playerOne = new Player("playerOne");
         firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
+        playerTwo = new Player("playerTwo");
+        lastPlayerMove = new PlayerMove(playerTwo, Move.PAPER);
     }
 
     @Test
     public void testCreateGame() throws Exception {
         CreateGameResponse createGameResponse = new CreateGameResponse("gameId");
-        Mockito.when(rockPaperScissorsGameService.createGame(playerOne.name())).thenReturn(createGameResponse.id());
+        Mockito.when(rockPaperScissorsGameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")
                         .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(createGameResponse.id()));
+                .andExpect(jsonPath("$.gameId").value(createGameResponse.id()));
     }
 
     @Test
@@ -88,7 +95,6 @@ public class GameControllerTest {
     @Test
     public void testGetGameState_PlayerTwoJoined() throws Exception {
         String gameId = "gameId";
-        Player playerTwo = new Player("playerTwo");
         RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerTwoJoinedState(playerOne, playerTwo);
         Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
 
@@ -102,7 +108,6 @@ public class GameControllerTest {
     @Test
     public void testGetGameState_FirstMoveMadeAwaitingLastMove() throws Exception {
         String gameId = "gameId";
-        Player playerTwo = new Player("playerTwo");
         RockPaperScissorsGameState rockPaperScissorsGameState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
         Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
 
@@ -119,7 +124,6 @@ public class GameControllerTest {
     @Test
     public void testGetGameState_GameEndedState() throws Exception {
         String gameId = "gameId";
-        Player playerTwo = new Player("playerTwo");
         PlayerMove lastPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
         String gameResult = playerOne.name() + " won by "
                 + firstPlayerMove.move().name() + " beating "
@@ -144,38 +148,38 @@ public class GameControllerTest {
     @Test
     public void testJoinGame_returnStatusOK() throws Exception {
         String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerTwoJoinedState(playerOne, new Player("playerTwo"));
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne.name())).thenReturn(rockPaperScissorsGameState);
+        RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerTwoJoinedState(playerOne, playerTwo);
+        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerTwo)).thenReturn(rockPaperScissorsGameState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
-                        .content(objectMapper.writeValueAsString(playerOne))
+                        .content(objectMapper.writeValueAsString(playerTwo))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).joinGame(gameId, playerOne.name());
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).joinGame(gameId, playerTwo);
     }
 
     @Test
     public void testMakeMove_returnStatusOK() throws Exception {
         String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new FirstMoveMadeState(playerOne, new Player("playerTwo"), firstPlayerMove);
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name())).thenReturn(rockPaperScissorsGameState);
+        RockPaperScissorsGameState rockPaperScissorsGameState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
+        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenReturn(rockPaperScissorsGameState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name());
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
     public void testJoinGame_GameExceptionThrown() throws Exception {
         String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne.name())).thenThrow(new GameFullException("Game full. Cannot join game"));
+        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne)).thenThrow(new GameFullException("Game full. Cannot join game"));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
-                        .content(objectMapper.writeValueAsString(playerOne.name()))
+                        .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorMessage").value("Game full. Cannot join game"));
@@ -184,7 +188,7 @@ public class GameControllerTest {
     @Test
     public void testMakeMove_GameExceptionThrown() throws Exception {
         String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name())).thenThrow(new MultipleMovesProhibitedException("Player already made move. Cannot make another move"));
+        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MultipleMovesProhibitedException("Player already made move. Cannot make another move"));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
@@ -192,13 +196,13 @@ public class GameControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorMessage").value("Player already made move. Cannot make another move"));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name());
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
     public void testJoinGame_PlayerExceptionThrown() throws Exception {
         String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne.name())).thenThrow(new PlayerNotInGameException("Player not in game. Cannot make move"));
+        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne)).thenThrow(new PlayerNotInGameException("Player not in game. Cannot make move"));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
                         .content(objectMapper.writeValueAsString(playerOne))
@@ -210,7 +214,7 @@ public class GameControllerTest {
     @Test
     public void testMakeMove_PlayerExceptionThrown() throws Exception {
         String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name())).thenThrow(new PlayerNotInGameException("Player is not in the game."));
+        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenThrow(new PlayerNotInGameException("Player is not in the game."));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
@@ -218,6 +222,6 @@ public class GameControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value("Player is not in the game."));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove.player().name(), firstPlayerMove.move().name());
+        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 }

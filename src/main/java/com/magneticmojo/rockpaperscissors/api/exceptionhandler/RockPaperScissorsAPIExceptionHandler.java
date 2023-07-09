@@ -1,7 +1,7 @@
 package com.magneticmojo.rockpaperscissors.api.exceptionhandler;
 
-import com.magneticmojo.rockpaperscissors.api.model.responses.ErrorResponse;
-import com.magneticmojo.rockpaperscissors.api.model.responses.ValidationErrorResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.exceptionresponses.ErrorResponse;
+import com.magneticmojo.rockpaperscissors.api.model.responses.exceptionresponses.ValidationErrorResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.exceptions.GameNotFoundException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

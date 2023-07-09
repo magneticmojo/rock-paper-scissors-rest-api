@@ -1,4 +1,4 @@
-package com.magneticmojo.rockpaperscissors.api.model.responses;
+package com.magneticmojo.rockpaperscissors.api.model.responses.gameresponses;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.magneticmojo.rockpaperscissors.api.serialization.responses.MakeMoveResponseSerializer;

@@ -1,4 +1,4 @@
-package com.magneticmojo.rockpaperscissors.api.model.responses;
+package com.magneticmojo.rockpaperscissors.api.model.responses.exceptionresponses;
 
 import jakarta.validation.constraints.NotNull;
 

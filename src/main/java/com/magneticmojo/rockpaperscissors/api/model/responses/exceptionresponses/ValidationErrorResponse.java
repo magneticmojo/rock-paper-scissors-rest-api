@@ -1,4 +1,4 @@
-package com.magneticmojo.rockpaperscissors.api.model.responses;
+package com.magneticmojo.rockpaperscissors.api.model.responses.exceptionresponses;
 
 import java.util.List;
 
