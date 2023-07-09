@@ -29,19 +29,19 @@ public class RockPaperScissorsGameService {
 
     public RockPaperScissorsGameState getGameState(String id) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
-        return rpsGame.getState(); // TODO return DTO
+        return rpsGame.getState();
     }
 
     public RockPaperScissorsGameState joinGame(String id, Player playerTwo) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         rpsGame.joinGame(playerTwo);
-        return rpsGame.getState(); // TODO return DTO
+        return rpsGame.getState();
     }
 
     public RockPaperScissorsGameState makeMove(String id, PlayerMove playerMove) {
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         rpsGame.makeMove(playerMove);
-        return rpsGame.getState(); // TODO return DTO
+        return rpsGame.getState();
     }
 
     private RockPaperScissorsGame getGameOrElseThrow(String id) {

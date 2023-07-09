@@ -71,7 +71,6 @@ public class GameEndedState implements RockPaperScissorsGameState {
         return "TIE: " + ownMove.name() + " vs " + opponentMove.name();
     }
 
-
     @Override
     public RockPaperScissorsGameState joinGame(Player player) {
         throw new GameEndedException("Game ended. Cannot join game");

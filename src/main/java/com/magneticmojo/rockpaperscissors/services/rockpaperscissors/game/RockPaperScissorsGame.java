@@ -1,6 +1,5 @@
 package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game;
 
-import com.magneticmojo.rockpaperscissors.api.model.responses.GameStateResponse;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
@@ -15,11 +14,11 @@ import java.util.UUID;
  */
 public class RockPaperScissorsGame {
 
-    private RockPaperScissorsGameState rockPaperScissorsGameState;
+    private RockPaperScissorsGameState gameState;
     private final String gameId;
 
     public RockPaperScissorsGame(Player playerOne) {
-        this.rockPaperScissorsGameState = new PlayerOneJoinedState(playerOne);
+        this.gameState = new PlayerOneJoinedState(playerOne);
         this.gameId = UUID.randomUUID().toString();
     }
 
@@ -28,19 +27,16 @@ public class RockPaperScissorsGame {
     }
 
     public RockPaperScissorsGameState getState() {
-        return rockPaperScissorsGameState;
-    } // TODO Change to something making it clear the state is allowed to be publicly exposed
-
-    public GameStateResponse joinGame(Player playerTwo) {
-        rockPaperScissorsGameState = rockPaperScissorsGameState.joinGame(playerTwo);
-        // Output the game state to the console
-        // Game id + player
-        return null; // Return GameStateResponse + Serializera det till JSON
+        return gameState;
     }
 
-    public GameStateResponse makeMove(PlayerMove playerMove) {
+    public RockPaperScissorsGameState joinGame(Player playerTwo) {
+        gameState = gameState.joinGame(playerTwo);
+        return gameState;
+    }
 
-        rockPaperScissorsGameState = rockPaperScissorsGameState.makeMove(playerMove);
-        return null; // Return GameStateResponse + Serializera det till JSON
+    public RockPaperScissorsGameState makeMove(PlayerMove playerMove) {
+        gameState = gameState.makeMove(playerMove);
+        return gameState;
     }
 }
