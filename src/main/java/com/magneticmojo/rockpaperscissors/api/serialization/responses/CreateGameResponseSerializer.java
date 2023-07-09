@@ -17,6 +17,7 @@ public class CreateGameResponseSerializer extends StdSerializer<CreateGameRespon
     public void serialize(CreateGameResponse createGameResponse, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("message", "Rock-Papper-Scissors game created");
+        jsonGenerator.writeStringField("playerOne", createGameResponse.player().name());
         jsonGenerator.writeStringField("gameId", createGameResponse.id());
         jsonGenerator.writeEndObject();
 

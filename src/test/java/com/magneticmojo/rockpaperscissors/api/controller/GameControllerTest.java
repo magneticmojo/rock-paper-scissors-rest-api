@@ -68,7 +68,7 @@ public class GameControllerTest {
 
     @Test
     public void testCreateGame() throws Exception {
-        CreateGameResponse createGameResponse = new CreateGameResponse("gameId");
+        CreateGameResponse createGameResponse = new CreateGameResponse("gameId", playerOne);
         Mockito.when(rockPaperScissorsGameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")

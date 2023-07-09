@@ -85,7 +85,7 @@ public class RockPaperScissorsGameServiceTest {
         when(inMemoryRockPaperScissorsGameRepository.getGame(anyString())).thenReturn(mockGame);
         when(mockGame.getState()).thenReturn(mockState);
 
-        //rockPaperScissorsGameService.makeMove(TEST_GAME_ID, mockMove.player().name(), mockMove.move().name());
+        rockPaperScissorsGameService.makeMove(TEST_GAME_ID, mockMove);
 
         verify(inMemoryRockPaperScissorsGameRepository, times(1)).getGame(TEST_GAME_ID);
         verify(mockGame, times(1)).makeMove(mockMove);
@@ -123,7 +123,7 @@ public class RockPaperScissorsGameServiceTest {
         when(inMemoryRockPaperScissorsGameRepository.getGame(anyString())).thenReturn(null);
 
         Exception exception = assertThrows(GameNotFoundException.class, () -> {
-            //rockPaperScissorsGameService.makeMove(TEST_GAME_ID, "somePlayer", Move.PAPER.name());
+            rockPaperScissorsGameService.makeMove(TEST_GAME_ID, new PlayerMove(new Player("somePlayer"), Move.PAPER));
         });
 
         assertEquals("Invalid id: " + TEST_GAME_ID, exception.getMessage());
