@@ -1,9 +1,8 @@
 package com.magneticmojo.rockpaperscissors.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.GameFullException;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.MultipleMovesProhibitedException;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNotInGameException;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.exceptions.GameNotFoundException;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.*;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Move;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
@@ -23,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,116 +44,139 @@ public class RockPaperScissorsGameControllerTest {
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private RockPaperScissorsGameService rockPaperScissorsGameService;
+    private RockPaperScissorsGameService gameService;
 
-    private Player playerOne;
-    private PlayerMove firstPlayerMove;
-    private Player playerTwo;
-    private PlayerMove lastPlayerMove;
-    private String gameId = "bf4422fe-f78a-4625-acdb-711db7838f99";
+    private final Player playerOne = new Player("playerOne");
+    private final Player playerTwo = new Player("playerTwo");
+    private final Player playerThree = new Player("playerThree");
+
+    private final Player playerWithNullName = new Player(null);
+    private final Player playerWithBlankName = new Player("");
+    private final Player playerWithWhitespaceName = new Player(" ");
+
+    private final PlayerMove firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
+    private final PlayerMove lastPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
+
+    private final String gameId = "bf4422fe-f78a-4625-acdb-711db7838f99";
+    private final String invalidGameId = "invalidGameId";
+    private String gameResult = playerOne.name() + " won by "
+            + firstPlayerMove.move().name() + " beating "
+            + lastPlayerMove.move().name() + ". "
+            + playerTwo.name() + " lost";
+
+    private final String gameNotFoundMessage = "Invalid id: ";
+    private final String gameNotFoundErrorCode = "GAME_NOT_FOUND";
+    private final String gameFullMessage = "Game full. Cannot join game";
+    private final String gameFullErrorCode = "GAME_FULL";
+    private final String gameEndedMessage = "Game ended. Cannot join game";
+    private final String gameEndedErrorCode = "GAME_ENDED";
+    private final String playerNotInGameMessage = "Player not in game. Cannot make move";
+    private final String playerNotInGameErrorCode = "PLAYER_NOT_IN_GAME";
+    private final String multipleMovesProhibitedMessage = "Player already made move. Cannot make another move";
+    private final String multipleMovesProhibitedErrorCode = "MULTIPLE_MOVES_PROHIBITED";
+    private final String missingPlayerTwoMessage = "Move prohibited. Player two not joined";
+    private final String missingPlayerTwoErrorCode = "MISSING_PLAYER_TWO";
+
+    private final CreateGameResponse createGameResponse = new CreateGameResponse(gameId, playerOne);
+    private final PlayerOneJoinedState playerOneJoinedState = new PlayerOneJoinedState(playerOne);
+    private final PlayerTwoJoinedState playerTwoJoinedState = new PlayerTwoJoinedState(playerOne, playerTwo);
+    private final FirstMoveMadeState firstMoveMadeState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
+    private final GameEndedState gameEndedState = new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove);
 
     RockPaperScissorsGameControllerTest(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }
 
-    @BeforeEach
-    public void setUp() {
-        playerOne = new Player("playerOne");
-        firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
-        playerTwo = new Player("playerTwo");
-        lastPlayerMove = new PlayerMove(playerTwo, Move.PAPER);
-    }
-
-    // create game tests **********************************************************************************************************************
+    // ********************************************** CREATE GAME TESTS *************************************************
 
     @Test
-    public void testCreateGameWithCorrectPlayer() throws Exception {
-        CreateGameResponse response = new CreateGameResponse(gameId, playerOne);
-        Mockito.when(rockPaperScissorsGameService.createGame(playerOne)).thenReturn(response.id());
+    public void testCreateGame_withValidPlayer_ReturnsCreatedStatusAndValidGameId() throws Exception {
+        Mockito.when(gameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")
                         .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.gameId").value(response.id()));
+                .andExpect(jsonPath("$.gameId").value(createGameResponse.id()));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).createGame(playerOne);
+        Mockito.verify(gameService, Mockito.times(1)).createGame(playerOne);
     }
 
     @Test
-    public void testCreateGame_withNullPlayer_BadRequest() throws Exception {
-        Player player = new Player(null);
-
+    public void testCreateGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/api/games")
-                        .content(objectMapper.writeValueAsString(player))
+                        .content(objectMapper.writeValueAsString(playerWithNullName))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-    }
 
-    @Test
-    public void testCreateGame_withEmptyPlayerName_BadRequest() throws Exception {
-        Player player = new Player("");
+        Mockito.verify(gameService, Mockito.times(0)).createGame(playerWithNullName);
 
         mockMvc.perform(post("/api/games")
-                        .content(objectMapper.writeValueAsString(player))
+                        .content(objectMapper.writeValueAsString(playerWithBlankName))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).createGame(playerWithBlankName);
+
+        mockMvc.perform(post("/api/games")
+                        .content(objectMapper.writeValueAsString(playerWithWhitespaceName))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).createGame(playerWithWhitespaceName);
     }
 
     @Test
-    public void testCreateGameCorrectState() throws Exception {
-        Player player = new Player("Test Player");
-        CreateGameResponse response = new CreateGameResponse(gameId, player);
-        Mockito.when(rockPaperScissorsGameService.createGame(player)).thenReturn(response.id());
+    public void testCreateGame_yieldsCorrectState() throws Exception {
+        Mockito.when(gameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")
-                        .content(objectMapper.writeValueAsString(player))
+                        .content(objectMapper.writeValueAsString(playerOne))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.gameId").value(response.id()));
+                .andExpect(jsonPath("$.gameId").value(createGameResponse.id()));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).createGame(player);
+        Mockito.verify(gameService, Mockito.times(1)).createGame(playerOne);
 
-        RockPaperScissorsGameState gameState = rockPaperScissorsGameService.getGameState(response.id());
+        Mockito.when(gameService.getGameState(createGameResponse.id())).thenReturn(playerOneJoinedState);
+        RockPaperScissorsGameState gameState = gameService.getGameState(createGameResponse.id());
         assertTrue(gameState instanceof PlayerOneJoinedState);
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
 
-    // get game state tests **********************************************************************************************************************
+    // ********************************************** GET GAME STATE TESTS *************************************************
 
     @Test
     public void testGetGameState_PlayerOneJoined() throws Exception {
-        String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerOneJoinedState(playerOne);
-        Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
+        Mockito.when(gameService.getGameState(gameId)).thenReturn(playerOneJoinedState);
 
         mockMvc.perform(get("/api/games/" + gameId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.playerOne").value(playerOne.name()));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).getGameState(gameId);
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
     @Test
     public void testGetGameState_PlayerTwoJoined() throws Exception {
-        String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerTwoJoinedState(playerOne, playerTwo);
-        Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
+        Mockito.when(gameService.getGameState(gameId)).thenReturn(playerTwoJoinedState);
 
         mockMvc.perform(get("/api/games/" + gameId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.playerOne").value(playerOne.name()))
                 .andExpect(jsonPath("$.playerTwo").value(playerTwo.name()));
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
     @Test
-    public void testGetGameState_FirstMoveMadeAwaitingLastMove() throws Exception {
-        String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
-        Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
+    public void testGetGameState_FirstMoveMade() throws Exception {
+        Mockito.when(gameService.getGameState(gameId)).thenReturn(firstMoveMadeState);
 
         mockMvc.perform(get("/api/games/" + gameId)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -162,115 +185,240 @@ public class RockPaperScissorsGameControllerTest {
                 .andExpect(jsonPath("$.playerTwo").value(playerTwo.name()))
                 .andExpect(jsonPath("$.firstMoveBy").value(playerOne.name()));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).getGameState(gameId);
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
     @Test
     public void testGetGameState_GameEndedState() throws Exception {
-        String gameId = "gameId";
-        PlayerMove lastPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
-        String gameResult = playerOne.name() + " won by "
-                + firstPlayerMove.move().name() + " beating "
-                + lastPlayerMove.move().name() + ". "
-                + playerTwo.name() + " lost";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new GameEndedState(playerOne, playerTwo, firstPlayerMove, lastPlayerMove);
-        Mockito.when(rockPaperScissorsGameService.getGameState(gameId)).thenReturn(rockPaperScissorsGameState);
+        String firstMoveByValue = playerOne.name() + " (" + firstPlayerMove.move().name() + ")";
+        String lastMoveByValue = playerTwo.name() + " (" + lastPlayerMove.move().name() + ")";
+
+        Mockito.when(gameService.getGameState(gameId)).thenReturn(gameEndedState);
 
         mockMvc.perform(get("/api/games/" + gameId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.playerOne").value(playerOne.name()))
                 .andExpect(jsonPath("$.playerTwo").value(playerTwo.name()))
-                .andExpect(jsonPath("$.firstMoveBy").value(playerOne.name() + " (" + firstPlayerMove.move().name() + ")"))
-                .andExpect(jsonPath("$.lastMoveBy").value(playerTwo.name() + " (" + lastPlayerMove.move().name() + ")"))
+                .andExpect(jsonPath("$.firstMoveBy").value(firstMoveByValue))
+                .andExpect(jsonPath("$.lastMoveBy").value(lastMoveByValue))
                 .andExpect(jsonPath("$.gameResult").value(gameResult));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).getGameState(gameId);
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(gameId);
     }
 
+    @Test
+    public void testGetGameState_InvalidGameId_YieldsNotFoundStatus() throws Exception {
+        Mockito.when(gameService.getGameState(invalidGameId)).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
 
-    // join game tests ************************************************************************************************************************
+        mockMvc.perform(get("/api/games/" + invalidGameId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof GameNotFoundException))
+                .andExpect(result -> {
+                    Exception resolvedException = result.getResolvedException();
+                    if (resolvedException != null) {
+                        assertEquals(gameNotFoundMessage + invalidGameId, resolvedException.getMessage());
+                        if (resolvedException instanceof GameNotFoundException) {
+                            assertEquals(gameNotFoundErrorCode, ((GameNotFoundException) resolvedException).getErrorCode());
+                        }
+                    }
+                });
+
+        Mockito.verify(gameService, Mockito.times(1)).getGameState(invalidGameId);
+    }
+
+    // ********************************************** JOIN GAME TESTS *************************************************
 
     @Test
-    public void testJoinGame_returnStatusOK() throws Exception {
-        String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new PlayerTwoJoinedState(playerOne, playerTwo);
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerTwo)).thenReturn(rockPaperScissorsGameState);
+    public void testJoinGame_withPlayerTwo_returnStatusOK() throws Exception {
+        Mockito.when(gameService.joinGame(gameId, playerTwo)).thenReturn(playerTwoJoinedState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
                         .content(objectMapper.writeValueAsString(playerTwo))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).joinGame(gameId, playerTwo);
+        Mockito.verify(gameService, Mockito.times(1)).joinGame(gameId, playerTwo);
     }
 
     @Test
+    public void testJoinGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(patch("/api/games/" + gameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerWithNullName))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).joinGame(gameId, playerWithNullName);
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerWithBlankName))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).joinGame(gameId, playerWithBlankName);
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerWithWhitespaceName))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).joinGame(gameId, playerWithWhitespaceName);
+    }
+
+    @Test
+    public void testJoinGame_withInvalidGameId_throwsGameNotFoundException() throws Exception {
+        Mockito.when(gameService.joinGame(invalidGameId, playerTwo)).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
+
+        mockMvc.perform(patch("/api/games/" + invalidGameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerTwo))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(gameNotFoundMessage + invalidGameId))
+                .andExpect(jsonPath("$.errorCode").value(gameNotFoundErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).joinGame(invalidGameId, playerTwo);
+    }
+
+    @Test
+    public void testJoinGame_whenGameFull_throwsGameFullException() throws Exception {
+        Mockito.when(gameService.joinGame(gameId, playerThree)).thenThrow(new GameFullException(gameFullMessage));
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerThree))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage").value(gameFullMessage))
+                .andExpect(jsonPath("$.errorCode").value(gameFullErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).joinGame(gameId, playerThree);
+    }
+
+    @Test
+    public void testJoinGame_whenGameEnded_throwsGameEndedException() throws Exception {
+        Mockito.when(gameService.joinGame(gameId, playerTwo)).thenThrow(new GameEndedException(gameEndedMessage));
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/join")
+                        .content(objectMapper.writeValueAsString(playerTwo))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage").value(gameEndedMessage))
+                .andExpect(jsonPath("$.errorCode").value(gameEndedErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).joinGame(gameId, playerTwo);
+    }
+
+    // ********************************************** MAKE MOVE TESTS *************************************************
+
+    @Test
     public void testMakeMove_returnStatusOK() throws Exception {
-        String gameId = "gameId";
-        RockPaperScissorsGameState rockPaperScissorsGameState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenReturn(rockPaperScissorsGameState);
+        Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenReturn(firstMoveMadeState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
-    public void testJoinGame_GameExceptionThrown() throws Exception {
-        String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne)).thenThrow(new GameFullException("Game full. Cannot join game"));
+    public void testMakeMove_InvalidGameId_ThrowsGameNotFoundException() throws Exception {
+        Mockito.when(gameService.makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class))).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
 
-        mockMvc.perform(patch("/api/games/" + gameId + "/join")
-                        .content(objectMapper.writeValueAsString(playerOne))
+        mockMvc.perform(patch("/api/games/" + invalidGameId + "/move")
+                        .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errorMessage").value("Game full. Cannot join game"));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage").value(gameNotFoundMessage + invalidGameId))
+                .andExpect(jsonPath("$.errorCode").value(gameNotFoundErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class));
     }
 
 
-    // make move tests ************************************************************************************************************************
+    @Test
+    public void testMakeMove_invalidRequestInput_badRequestResponse() throws Exception {
+        PlayerMove playerMove = new PlayerMove(new Player(null), Move.ROCK);
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/move")
+                        .content(objectMapper.writeValueAsString(playerMove))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class));
+
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/move")
+                        .content(objectMapper.writeValueAsString(null))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class));
+
+        PlayerMove playerMove2 = new PlayerMove(playerOne, null);
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/move")
+                        .content(objectMapper.writeValueAsString(playerMove2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        Mockito.verify(gameService, Mockito.times(0)).makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class));
+    }
 
     @Test
-    public void testMakeMove_GameExceptionThrown() throws Exception {
-        String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MultipleMovesProhibitedException("Player already made move. Cannot make another move"));
+    public void testMakeMove_missingPlayerTwoExceptionThrown() throws Exception {
+        Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MissingPlayerTwoException(missingPlayerTwoMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errorMessage").value("Player already made move. Cannot make another move"));
+                .andExpect(jsonPath("$.errorMessage").value(missingPlayerTwoMessage))
+                .andExpect(jsonPath("$.errorCode").value(missingPlayerTwoErrorCode));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 
     @Test
-    public void testJoinGame_PlayerExceptionThrown() throws Exception {
-        String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.joinGame(gameId, playerOne)).thenThrow(new PlayerNotInGameException("Player not in game. Cannot make move"));
-
-        mockMvc.perform(patch("/api/games/" + gameId + "/join")
-                        .content(objectMapper.writeValueAsString(playerOne))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.errorMessage").value("Player not in game. Cannot make move"));
-    }
-
-    @Test
-    public void testMakeMove_PlayerExceptionThrown() throws Exception {
-        String gameId = "gameId";
-        Mockito.when(rockPaperScissorsGameService.makeMove(gameId, firstPlayerMove)).thenThrow(new PlayerNotInGameException("Player is not in the game."));
+    public void testMakeMove_playerNotInGameExceptionThrown() throws Exception {
+        Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new PlayerNotInGameException(playerNotInGameMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
                         .content(objectMapper.writeValueAsString(firstPlayerMove))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.errorMessage").value("Player is not in the game."));
+                .andExpect(jsonPath("$.errorMessage").value(playerNotInGameMessage))
+                .andExpect(jsonPath("$.errorCode").value(playerNotInGameErrorCode));
 
-        Mockito.verify(rockPaperScissorsGameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
+    }
+
+    @Test
+    public void testMakeMove_multipleMovesProhibitedExceptionThrown() throws Exception {
+        Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MultipleMovesProhibitedException(multipleMovesProhibitedMessage));
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/move")
+                        .content(objectMapper.writeValueAsString(firstPlayerMove))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage").value(multipleMovesProhibitedMessage))
+                .andExpect(jsonPath("$.errorCode").value(multipleMovesProhibitedErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
+    }
+
+    @Test
+    public void testMakeMove_gameEndedExceptionThrown() throws Exception {
+        Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new GameEndedException(gameEndedMessage));
+
+        mockMvc.perform(patch("/api/games/" + gameId + "/move")
+                        .content(objectMapper.writeValueAsString(firstPlayerMove))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage").value(gameEndedMessage))
+                .andExpect(jsonPath("$.errorCode").value(gameEndedErrorCode));
+
+        Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 }

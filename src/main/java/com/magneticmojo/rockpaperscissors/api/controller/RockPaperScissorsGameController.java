@@ -102,5 +102,15 @@ public class RockPaperScissorsGameController {
 // TODO MAKE MOVE --> PlayerMove = null --> ???
 // TODO MAKE MOVE --> PlayerMove = new PlayerMove(player, null) --> ???
 // TODO MAKE MOVE --> PlayerMove = new PlayerMove(player, Move.ROCK) --> ???
-// TODO MAKE MOVE --> Incorrect id - GameNotFoundException + 404
 // TODO MAKE MOVE --> Setup Create + Join --> Make Move --> Gamestate = FirstMoveMadeState --> Make Move --> Gamestate = GameEndedState
+
+// TODO MAKE MOVE --> Incorrect id - GameNotFoundException + 404
+// TODO MAKE MOVE --> PlayerOneJoinedState --> throw new MissingPlayerTwoException("Move prohibited. Player two not joined");
+// TODO MAKE MOVE --> PlayerTwoJoinedState --> throw new PlayerNotInGameException("Player not in game. Cannot make move");
+// TODO MAKE MOVE --> FirstMoveMadeState --> throw new PlayerNotInGameException("Player not in game. Cannot make move");
+// TODO MAKE MOVE --> FirstMoveMadeState --> throw new MultipleMovesProhibitedException("Player already made move. Cannot make another move");
+// TODO MAKE MOVE --> GameEndedState --> throw new GameEndedException("Game ended. Cannot make move");
+
+
+
+

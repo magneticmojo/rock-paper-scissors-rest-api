@@ -47,7 +47,7 @@ public class RockPaperScissorsGameService {
     private RockPaperScissorsGame getGameOrElseThrow(String id) {
         RockPaperScissorsGame rpsGame = rockPaperScissorsGameRepository.getGame(id);
         if (rpsGame == null) {
-            throw new GameNotFoundException("Invalid id: ", id);
+            throw new GameNotFoundException("Invalid id: " + id);
         }
         return rpsGame;
     }
