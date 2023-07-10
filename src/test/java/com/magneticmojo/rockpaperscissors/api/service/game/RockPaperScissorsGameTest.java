@@ -38,6 +38,8 @@ public class RockPaperScissorsGameTest {
         assertThrows(PlayerNullException.class, () -> new RockPaperScissorsGame(null));
     }
 
+    // ******************************* STATE TRANSITIONS *******************************
+
     @Test
     void testJoinGameAndMakeMove_transitionsToNextState_notEqualsPreviousState() {
         RockPaperScissorsGameState state1 = game.getState();
@@ -70,6 +72,8 @@ public class RockPaperScissorsGameTest {
         assertThrows(MissingPlayerTwoException.class, () -> game.makeMove(playerOneMove));
         assertEquals(state1.getClass(), PlayerOneJoinedState.class);
     }
+
+    // ******************************* GAME FLOW *******************************
 
     @Test
     void testGameFlow_resultsInTie() {
@@ -105,6 +109,7 @@ public class RockPaperScissorsGameTest {
         assertEquals(gameResult, ((GameEndedState) state).getGameResult());
     }
 
+    // ******************************* JOIN GAME *******************************
 
     @Test
     void testJoinGame_AfterGameEnded_ThrowsGameEndedException() {
@@ -126,6 +131,8 @@ public class RockPaperScissorsGameTest {
         Player p3 = new Player("p3");
         assertThrows(GameFullException.class, () -> game.joinGame(p3));
     }
+
+    // ******************************* MAKE MOVE *******************************
 
     @Test
     void testMakeMove_ByPlayerNotInGame_ThrowsPlayerNotInGameException() {

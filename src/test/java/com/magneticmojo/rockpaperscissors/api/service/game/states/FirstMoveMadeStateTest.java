@@ -9,7 +9,6 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.FirstMoveMadeState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.GameEndedState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,28 +20,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class FirstMoveMadeStateTest {
 
-    private Player playerOne;
-    private Player playerTwo;
-    private PlayerMove firstPlayerMove;
-    private FirstMoveMadeState firstMoveMadeState;
+    private final Player playerOne = new Player("player1");
+    private final Player playerTwo = new Player("player2");
+    private final Player playerThree = new Player("player3");
+    private final PlayerMove firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
+    private final FirstMoveMadeState firstMoveMadeState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
 
-    @BeforeEach
-    void setUp() {
-        playerOne = new Player("player1");
-        playerTwo = new Player("player2");
-        firstPlayerMove = new PlayerMove(playerOne, Move.ROCK);
-        firstMoveMadeState = new FirstMoveMadeState(playerOne, playerTwo, firstPlayerMove);
-    }
+    // *********************************** JOIN GAME ************************************************
 
     @Test
     void testJoinGame_GameFullException() {
-        Player playerThree = new Player("player3");
         assertThrows(GameFullException.class, () -> firstMoveMadeState.joinGame(playerThree));
     }
 
+    // *********************************** MAKE MOVE ************************************************
+
     @Test
     void testMakeMove_withPlayerNotInGame() {
-        Player playerThree = new Player("player3");
         PlayerMove playerThreeMove = new PlayerMove(playerThree, Move.ROCK);
         assertThrows(PlayerNotInGameException.class, () -> firstMoveMadeState.makeMove(playerThreeMove));
     }
@@ -54,22 +48,9 @@ class FirstMoveMadeStateTest {
     }
 
     @Test
-    void testMakeMove_withValidMove() {
+    void testMakeMove_withValidMove_returnsGameEndedState() {
         PlayerMove validPlayerMove = new PlayerMove(playerTwo, Move.SCISSORS);
-        RockPaperScissorsGameState gameResult = firstMoveMadeState.makeMove(validPlayerMove);
-
-        assertTrue(gameResult instanceof GameEndedState);
-        String expectedResult = "player1 won by ROCK beating SCISSORS. player2 lost";
-        assertEquals(expectedResult, ((GameEndedState) gameResult).getGameResult());
-    }
-
-    @Test
-    void testMakeMoveWithTie() {
-        PlayerMove tiePlayerMove = new PlayerMove(playerTwo, Move.ROCK);
-        RockPaperScissorsGameState gameResult = firstMoveMadeState.makeMove(tiePlayerMove);
-
-        assertTrue(gameResult instanceof GameEndedState);
-        String expectedResult = "TIE: ROCK vs ROCK";
-        assertEquals(expectedResult, ((GameEndedState) gameResult).getGameResult());
+        RockPaperScissorsGameState gameState = firstMoveMadeState.makeMove(validPlayerMove);
+        assertTrue(gameState instanceof GameEndedState);
     }
 }

@@ -87,7 +87,7 @@ public class RockPaperScissorsGameControllerTest {
     // ********************************************** CREATE GAME TESTS *************************************************
 
     @Test
-    public void testCreateGame_withValidPlayer_ReturnsCreatedStatusAndValidGameId() throws Exception {
+    void testCreateGame_withValidPlayer_ReturnsCreatedStatusAndValidGameId() throws Exception {
         Mockito.when(gameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")
@@ -100,7 +100,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testCreateGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
+    void testCreateGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/api/games")
                         .content(objectMapper.writeValueAsString(playerWithNullName))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -124,7 +124,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testCreateGame_yieldsCorrectState() throws Exception {
+    void testCreateGame_yieldsCorrectState() throws Exception {
         Mockito.when(gameService.createGame(playerOne)).thenReturn(createGameResponse.id());
 
         mockMvc.perform(post("/api/games")
@@ -146,7 +146,7 @@ public class RockPaperScissorsGameControllerTest {
     // ********************************************** GET GAME STATE TESTS *************************************************
 
     @Test
-    public void testGetGameState_PlayerOneJoined() throws Exception {
+    void testGetGameState_PlayerOneJoined() throws Exception {
         Mockito.when(gameService.getGameState(gameId)).thenReturn(playerOneJoinedState);
 
         mockMvc.perform(get("/api/games/" + gameId)
@@ -158,7 +158,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testGetGameState_PlayerTwoJoined() throws Exception {
+    void testGetGameState_PlayerTwoJoined() throws Exception {
         Mockito.when(gameService.getGameState(gameId)).thenReturn(playerTwoJoinedState);
 
         mockMvc.perform(get("/api/games/" + gameId)
@@ -171,7 +171,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testGetGameState_FirstMoveMade() throws Exception {
+    void testGetGameState_FirstMoveMade() throws Exception {
         Mockito.when(gameService.getGameState(gameId)).thenReturn(firstMoveMadeState);
 
         mockMvc.perform(get("/api/games/" + gameId)
@@ -185,7 +185,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testGetGameState_GameEndedState() throws Exception {
+    void testGetGameState_GameEndedState() throws Exception {
         String firstMoveByValue = playerOne.name() + " (" + firstPlayerMove.move().name() + ")";
         String lastMoveByValue = playerTwo.name() + " (" + lastPlayerMove.move().name() + ")";
 
@@ -204,7 +204,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testGetGameState_InvalidGameId_YieldsNotFoundStatus() throws Exception {
+    void testGetGameState_InvalidGameId_YieldsNotFoundStatus() throws Exception {
         Mockito.when(gameService.getGameState(invalidGameId)).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
 
         mockMvc.perform(get("/api/games/" + invalidGameId)
@@ -227,7 +227,7 @@ public class RockPaperScissorsGameControllerTest {
     // ********************************************** JOIN GAME TESTS *************************************************
 
     @Test
-    public void testJoinGame_withPlayerTwo_returnStatusOK() throws Exception {
+    void testJoinGame_withPlayerTwo_returnStatusOK() throws Exception {
         Mockito.when(gameService.joinGame(gameId, playerTwo)).thenReturn(playerTwoJoinedState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
@@ -239,7 +239,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testJoinGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
+    void testJoinGame_withInvalidPlayerName_ReturnsBadRequest() throws Exception {
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
                         .content(objectMapper.writeValueAsString(playerWithNullName))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -263,7 +263,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testJoinGame_withInvalidGameId_throwsGameNotFoundException() throws Exception {
+    void testJoinGame_withInvalidGameId_throwsGameNotFoundException() throws Exception {
         Mockito.when(gameService.joinGame(invalidGameId, playerTwo)).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
 
         mockMvc.perform(patch("/api/games/" + invalidGameId + "/join")
@@ -277,7 +277,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testJoinGame_whenGameFull_throwsGameFullException() throws Exception {
+    void testJoinGame_whenGameFull_throwsGameFullException() throws Exception {
         Mockito.when(gameService.joinGame(gameId, playerThree)).thenThrow(new GameFullException(gameFullMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
@@ -291,7 +291,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testJoinGame_whenGameEnded_throwsGameEndedException() throws Exception {
+    void testJoinGame_whenGameEnded_throwsGameEndedException() throws Exception {
         Mockito.when(gameService.joinGame(gameId, playerTwo)).thenThrow(new GameEndedException(gameEndedMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/join")
@@ -307,7 +307,7 @@ public class RockPaperScissorsGameControllerTest {
     // ********************************************** MAKE MOVE TESTS *************************************************
 
     @Test
-    public void testMakeMove_returnStatusOK() throws Exception {
+    void testMakeMove_returnStatusOK() throws Exception {
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenReturn(firstMoveMadeState);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
@@ -319,7 +319,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testMakeMove_InvalidGameId_ThrowsGameNotFoundException() throws Exception {
+    void testMakeMove_InvalidGameId_ThrowsGameNotFoundException() throws Exception {
         Mockito.when(gameService.makeMove(Mockito.anyString(), Mockito.any(PlayerMove.class))).thenThrow(new GameNotFoundException(gameNotFoundMessage + invalidGameId));
 
         mockMvc.perform(patch("/api/games/" + invalidGameId + "/move")
@@ -334,7 +334,7 @@ public class RockPaperScissorsGameControllerTest {
 
 
     @Test
-    public void testMakeMove_invalidRequestInput_badRequestResponse() throws Exception {
+    void testMakeMove_invalidRequestInput_badRequestResponse() throws Exception {
         PlayerMove playerMove = new PlayerMove(new Player(null), Move.ROCK);
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
@@ -363,7 +363,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testMakeMove_missingPlayerTwoExceptionThrown() throws Exception {
+    void testMakeMove_missingPlayerTwoExceptionThrown() throws Exception {
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MissingPlayerTwoException(missingPlayerTwoMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
@@ -377,7 +377,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testMakeMove_playerNotInGameExceptionThrown() throws Exception {
+    void testMakeMove_playerNotInGameExceptionThrown() throws Exception {
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new PlayerNotInGameException(playerNotInGameMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
@@ -391,7 +391,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testMakeMove_multipleMovesProhibitedExceptionThrown() throws Exception {
+    void testMakeMove_multipleMovesProhibitedExceptionThrown() throws Exception {
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new MultipleMovesProhibitedException(multipleMovesProhibitedMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")
@@ -405,7 +405,7 @@ public class RockPaperScissorsGameControllerTest {
     }
 
     @Test
-    public void testMakeMove_gameEndedExceptionThrown() throws Exception {
+    void testMakeMove_gameEndedExceptionThrown() throws Exception {
         Mockito.when(gameService.makeMove(gameId, firstPlayerMove)).thenThrow(new GameEndedException(gameEndedMessage));
 
         mockMvc.perform(patch("/api/games/" + gameId + "/move")

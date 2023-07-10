@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PlayerOneJoinedStateTest {
 
+    // ************************************* JOIN GAME *************************************
+
     @Test
     void joinGame_withUniquePlayerName_returnsPlayerTwoJoinedState() {
         PlayerOneJoinedState state = new PlayerOneJoinedState(new Player("p1"));
@@ -40,6 +42,8 @@ public class PlayerOneJoinedStateTest {
         assertTrue(nextState instanceof PlayerTwoJoinedState);
         assertEquals("p12", ((PlayerTwoJoinedState) nextState).getPlayerTwo().name());
     }
+
+    // ************************************* MAKE MOVE *************************************
 
     @Test
     void makeMove_throwsGameNotFullException() {

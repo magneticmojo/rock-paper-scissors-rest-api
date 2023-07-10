@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PlayerTwoJoinedStateTest {
 
+    // ***************************************** JOIN GAME *****************************************
+
     @Test
     void joinGame_throwsGameFullException() {
         PlayerTwoJoinedState state = new PlayerTwoJoinedState(new Player("p1"), new Player("p2"));
@@ -31,6 +33,8 @@ public class PlayerTwoJoinedStateTest {
 
         assertThrows(GameFullException.class, () -> state.joinGame(playerThree));
     }
+
+    // ***************************************** MAKE MOVE *****************************************
 
     @Test
     void makeMove_withPlayerInGame_returnsFirstMoveMadeAwaitingLastMoveState() {

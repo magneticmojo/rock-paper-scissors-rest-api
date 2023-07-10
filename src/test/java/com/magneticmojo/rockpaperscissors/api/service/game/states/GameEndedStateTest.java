@@ -17,29 +17,40 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GameEndedStateTest {
 
+    private Player playerOne = new Player("p1");
+    private Player playerTwo = new Player("p2");
+    private Player playerThree = new Player("p3");
+    private PlayerMove playerMoveOne = new PlayerMove(playerOne, Move.ROCK);
+    private PlayerMove playerMoveTwo = new PlayerMove(playerTwo, Move.PAPER);
+    private PlayerMove playerMoveThree = new PlayerMove(playerThree, Move.ROCK);
+
+    private String gameResultPaperWin = playerTwo.name() + " won by " + Move.PAPER + " beating " + Move.ROCK + ". " + playerOne.name() + " lost";
+    private String gameResultTie = "TIE: " + Move.ROCK + " vs " + Move.ROCK;
+
+    private GameEndedState gameEndedStatePaperWin = new GameEndedState(playerOne, playerTwo, playerMoveOne, playerMoveTwo);
+
+    private GameEndedState gameEndedStateTie = new GameEndedState(playerOne, playerTwo, playerMoveOne, playerMoveThree);
+
+
     @Test
-    void joinGame_throwsGameEndedException() {
-        GameEndedState state = new GameEndedState(
-                new Player("p1"),
-                new Player("p2"),
-                new PlayerMove(new Player("p1"), Move.ROCK),
-                new PlayerMove(new Player("p2"), Move.PAPER));
-
+    void testCannotJoinGame_throwsGameEndedException() {
         Player playerThree = new Player("p3");
-
-        assertThrows(GameEndedException.class, () -> state.joinGame(playerThree));
+        assertThrows(GameEndedException.class, () -> gameEndedStatePaperWin.joinGame(playerThree));
     }
 
     @Test
-    void makeMove_throwsGameEndedException() {
-        GameEndedState state = new GameEndedState(
-                new Player("p1"),
-                new Player("p2"),
-                new PlayerMove(new Player("p1"), Move.ROCK),
-                new PlayerMove(new Player("p2"), Move.PAPER));
-
+    void testCannotMakeMove_throwsGameEndedException() {
         PlayerMove move = new PlayerMove(new Player("p3"), Move.ROCK);
+        assertThrows(GameEndedException.class, () -> gameEndedStatePaperWin.makeMove(move));
+    }
 
-        assertThrows(GameEndedException.class, () -> state.makeMove(move));
+    @Test
+    void testPaperBeatsRock() {
+        assertEquals(gameResultPaperWin, gameEndedStatePaperWin.getGameResult());
+    }
+
+    @Test
+    void testTie() {
+        assertEquals(gameResultTie, gameEndedStateTie.getGameResult());
     }
 }
