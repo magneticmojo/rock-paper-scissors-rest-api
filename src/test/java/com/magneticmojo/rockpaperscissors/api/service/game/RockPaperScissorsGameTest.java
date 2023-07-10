@@ -1,9 +1,6 @@
 package com.magneticmojo.rockpaperscissors.api.service.game;
 
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.GameEndedException;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.GameFullException;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.MissingPlayerTwoException;
-import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNotInGameException;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.*;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Move;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
@@ -34,6 +31,11 @@ public class RockPaperScissorsGameTest {
         p1 = new Player("p1");
         p2 = new Player("p2");
         game = new RockPaperScissorsGame(p1);
+    }
+
+    @Test
+    public void testConstructor_withNullPlayer_throwsPlayerNullException() {
+        assertThrows(PlayerNullException.class, () -> new RockPaperScissorsGame(null));
     }
 
     @Test
