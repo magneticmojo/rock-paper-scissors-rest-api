@@ -9,7 +9,7 @@ import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.GameEnded
 
 /**
  * The GameEndedState class represents the final game state when a game of Rock-Paper-Scissors has concluded.
- * At this state, the game results are set, and no further operations like joining the game or making a move are allowed.
+ * At this state, the game results are determined, and no further operations like joining the game or making a move are allowed.
  * Any attempt to perform these operations will result in a GameEndedException.
  * The class implements the RockPaperScissorsGameState interface, thus representing a concrete state of the State Pattern.
  */
