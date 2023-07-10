@@ -6,6 +6,9 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Used by RockPaperScissorsController to serialize the response to a create game request.
+ */
 @JsonSerialize(using = CreateGameResponseSerializer.class)
 public record CreateGameResponse(@NotBlank String id, @NotNull Player player) {
 }
