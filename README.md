@@ -1,8 +1,8 @@
 ##Rock Paper Scissors API
 The Rock Paper Scissors API is a RESTful API that provides a platform to play the 
-classic game of Rock, Paper, Scissors. 
-It is developed in Java using Spring Boot and designed to be a starting point 
-for a larger project that others should be able to continue working on, adding functionality, endpoints or other games. 
+classic game of Rock, Paper, Scissors (https://en.wikipedia.org/wiki/Rock_paper_scissors).
+It is developed in Java 17 using Spring Boot 3.1.1 and Apache Maven 3.9.1 and designed to be a starting point 
+for a larger project accessible for other developers to continue working on, adding functionality, endpoints or other games. 
 
 ####The project is separated in two main packages:
 * api - The API module. It contains the RESTful API for the Rock-Paper-Scissors game.
@@ -13,8 +13,8 @@ for a larger project that others should be able to continue working on, adding f
 ###Pre-requisites
 To run this project, you need to have:
 
-* Java 17
-* Apache Maven 
+* Java 17 or higher installed (https://www.java.com/download/ie_manual.jsp)
+* Apache Maven 3.9.1 or higher installed (https://maven.apache.org/download.cgi)
 
 ##Building the Project
 Clone the repository:
@@ -35,12 +35,20 @@ mvn spring-boot:run
 ```
 
 ###Running as a Standalone JAR
-You can also package the application as a standalone JAR and run it:
+You can package the application as a standalone JAR:
+```
+mvn clean package
+```
+The JAR file will be located in the target directory. You can run the JAR file with the following command from the project root directory:
+```
+java -jar target/RockPaperScissorsRESTAPI-0.0.1-SNAPSHOT.jar
+```
+###Compatibility and Testing
+This project has been developed and tested on a MacBook Pro (14-inch, 2021) equipped with an Apple M1 Pro chip and 16GB of memory. 
+The operating system used is macOS 13.3.1. While the project should work fine on other systems that meet the prerequisites (Java 17 and Apache Maven), 
+it's worth noting that the testing so far has been performed on the aforementioned system. 
+As such, if you're using a different setup, your mileage may vary. Contributions to test and improve compatibility across different platforms are welcome.
 
-```
-java -jar target/rpsapi-0.0.1-SNAPSHOT.jar
-```
-Replace rpsapi-0.0.1-SNAPSHOT.jar with the actual name of the JAR file.
 
 ##API Usage
 The API provides the following endpoints:
@@ -59,14 +67,15 @@ Make a move (PATCH request).
 Endpoint: /api/games
 
 The endpoint is used by the first player to create a new game. The request body should contain the name of the player creating the game.
-Request:
+
+Request body:
 ```
 {
     "name": "Player One"
 }
 ```
 
-Response:
+Response (Successful: Http status 201 CREATED):
 ```
 {
     "message": "Rock-Papper-Scissors game created",
@@ -83,17 +92,17 @@ Substitute {id} with the gameId from the response from the create game request. 
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623
 ```
-Request:
+Request body (empty):
 ```
 ```
-Response: 
+Response (Successful: Http status 200 OK): 
 ```
 {
     "gameState": "Player one created and joined game",
     "playerOne": "Player One"
 }
 ```
-### Join a game
+### Join a game (second player)
 Endpoint: /api/games/{id}/join
 
 The endpoint is used by the second player to join the game. The request body should contain the name of the player joining the game.
@@ -101,13 +110,13 @@ Substitute {id} with the gameId from the response from the create game request.
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623/join
 ```
-Request: 
+Request body: 
 ```
 {
     "name": "Player Two"
 }
 ```
-Response: 
+Response (Successful: Http status 200 OK):
 ```
 {
     "message": "Player two joined",
@@ -124,10 +133,10 @@ Substitute {id} with the gameId from the response from the create game request. 
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623
 ```
-Request:
+Request body (empty):
 ```
 ```
-Response:
+Response (Successful: Http status 200 OK):
 ```
 {
     "gameState": "Player two joined",
@@ -147,7 +156,7 @@ A subsequent request to "api/games/{id}", for checking the current game state, w
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623/move
 ```
-Request: 
+Request body: 
 ```
 {
     "player": {
@@ -156,7 +165,7 @@ Request:
     "move": "ROCK"
 }
 ```
-Response: 
+Response (Successful: Http status 200 OK):
 ```
 {
     "message": "First move made",
@@ -172,7 +181,7 @@ Substitute {id} with the gameId from the response from the create game request. 
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623/move
 ```
-Request: 
+Request body: 
 ```
 {
     "player": {
@@ -181,7 +190,7 @@ Request:
     "move": "PAPER"
 }
 ```
-Response: 
+Response (Successful: Http status 200 OK):
 ```
 {
     "message": "Last move made",
@@ -198,10 +207,10 @@ Substitute {id} with the gameId from the response from the create game request. 
 ```
 /api/games/d42da742-9f7e-41ab-86d9-e2712473d623
 ```
-Request:
+Request body (empty):
 ```
 ```
-Response:
+Response (Successful: Http status 200 OK):
 ```
 {
     "gameState": "Game ended",
@@ -212,6 +221,142 @@ Response:
     "lastMoveBy": "Player Two (PAPER)"
 }
 ```
+## Unsuccessful Requests:
+### POST: /api/games
+#####Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
+```
+{
+    "HttpStatusCode": 400,
+    "errors": [
+        "must not be blank"
+    ]
+}
+```
+####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+```
+{
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "Failed to read request",
+    "instance": "/api/games"
+}
+```
+### GET: /api/games/{id}
+#####Empty gameId in the URL will result in a 404 NOT FOUND response.
+```
+{
+    "timestamp": "2023-07-10T23:13:24.607+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "path": "/api/games/"
+}
+```
+#### Incorrect gameId in the URL will result in a 404 NOT FOUND response.
+```
+{
+"errorCode": "GAME_NOT_FOUND",
+"errorMessage": "Invalid id: 1234"
+}
+```
+
+### PATCH: /api/games/{id}/join
+#####Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
+```
+{
+    "HttpStatusCode": 400,
+    "errors": [
+        "must not be blank"
+    ]
+}
+```
+#### Incorrect gameId in the URL will result in a 404 NOT FOUND response.
+```
+{
+"errorCode": "GAME_NOT_FOUND",
+"errorMessage": "Invalid id: 1234"
+}
+```
+####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+```
+{
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "Failed to read request",
+    "instance": "/api/games/59e5b3fa-25cf-4b7a-99fa-392406f75198/join"
+}
+```
+#### Joining a game that already has two players will result in a 409 CONFLICT response. 
+```
+{
+    "errorCode": "GAME_FULL",
+    "errorMessage": "Game full. Cannot join game"
+}
+```
+#### Joining a game that has ended will result in a 409 CONFLICT response.
+```
+{
+    "errorCode": "GAME_ENDED",
+    "errorMessage": "Game ended. Cannot join game"
+}
+```
+### PATCH: /api/games/{id}/move
+#####Empty, blank or null value of keys values in the request body will result in a 40O BAD REQUEST response.
+```
+{
+    "HttpStatusCode": 400,
+    "errors": [
+        "must not be blank"
+    ]
+}
+```
+#### Incorrect gameId in the URL will result in a 404 NOT FOUND response.
+```
+{
+"errorCode": "GAME_NOT_FOUND",
+"errorMessage": "Invalid id: 1234"
+}
+```
+####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+```
+{
+"type": "about:blank",
+"title": "Bad Request",
+"status": 400,
+"detail": "Failed to read request",
+"instance": "/api/games/59e5b3fa-25cf-4b7a-99fa-392406f75198/move"
+}
+```
+#### Making a move in a game without a second player will result in a 409 CONFLICT response.
+```
+{
+    "errorCode": "MISSING_PLAYER_TWO",
+    "errorMessage": "Move prohibited. Player two not joined"
+}
+```
+#### Player not in the game making a move will result in a 409 CONFLICT response.
+```
+{
+    "errorCode": "PLAYER_NOT_IN_GAME",
+    "errorMessage": "Player not in game. Cannot make move"
+}
+```
+#### Player in game making a second move will result in a 409 CONFLICT response.
+```
+{
+    "errorCode": "MULTIPLE_MOVES_PROHIBITED",
+    "errorMessage": "Player already made move. Cannot make another move"
+}
+```
+#### Making a move in a game that has ended will result in a 409 CONFLICT response.
+```
+{
+    "errorCode": "GAME_ENDED",
+    "errorMessage": "Game ended. Cannot make move"
+}
+```
+
 ## Curl commands for using the API to play a game
 
 ### Setup 
@@ -250,10 +395,15 @@ curl -X PATCH -H "Content-Type: application/json" -d '{"player": {"name": "playe
 ## Areas of Improvement
 
 ### API and domain model design 
-A winner attribute could be added for clarity instead of the gameResult attribute. Functionality for returning a playerNumber (for move requests) 
+A winner attribute could be added for clarity in addition to the gameResult attribute. Functionality for returning a playerNumber (for move request responses) 
 could be added. This would make it clearer in the response to the client which player number the player making a move has. 
-RockPaperScissorsGameState implementations could have the gameId as a field to be included in the responses from the GET endpoint. 
-Implementing a conversion to capitalize the move value received from the request could make the endpoint be more fail-safe from the client's point of view.
+RockPaperScissorsGameState implementations could have the gameId as a member field. The gameId value could then be included in the responses from the GET endpoint. 
+Implementing a conversion to capitalize the move value received from the request body could make the endpoint for making moves be more fail-safe from the client's point of view.
+
+#### Endpoint Responses
+Some responses from the endpoints could be more detailed and descriptive. The responses could include more information. 
+Especially the unsuccessful responses. Also, the formatting of the unsuccessful responses for invalid JSON format and 
+"Empty, blank or null" could be more coherent with the other responses. 
 
 #### Unique player id
 A UUID could be used to identify players, instead of the player name. This would make it possible
@@ -261,18 +411,22 @@ to have both players with the same exact name in one game. I could also be good 
 identification of returning players.
 
 #### Security - More request input validation
-With other future persistence mechanism in place, input validation could be used to guard against 
+With other future persistence mechanism in place, expanded input validation could be used to guard against 
 e.g. injection attacks.
 
 #### DTOs
 More DTOs could be used to separate the API from the domain model. This would make it easier to
-change the domain model without affecting the API.
+change the domain model without affecting the API. In the current implementation such classes were avoided to keep the code 
+simple and concise.
 
 #### Message Source (Spring)
 Could be used for internationalization of messages. And to centralize the handling of response and exception messages.
 
 #### Exception Handling
-The exception handling for @Validated and MethodArgumentNotValidException could be more specific.
+The exception handling for @Validated and MethodArgumentNotValidException could be more specific. 
+PlayerNullException and PlayerMoveNullException are not handled by the exception handler. The reason for this is that 
+the @Validated annotation is used in the controller class. Therefore, in the current implementation, with the API as an interface, 
+those exceptions are not thrown. But with another interface communicating directly with the service class, they would be needed.
 
 ### Logging
 No logging functionality is implemented. This could greatly aid in the future development of the API.
@@ -282,9 +436,9 @@ could be added to the exception classes for more detailed logging. Time stamps c
 ### Testing
 A refactoring of some components would make it easier to test to the full extent. 
 More automated tests could be added, with a wider coverage, and written in a more consistent style. 
-Integration testning was done with Postman. Perhaps this could have been done with JUnit instead. 
+Integration testning was done with Postman. Perhaps this could have been done with JUnit instead. To keep everything in one place.
 
 ### Documentation
 Only class-level short, concise comments are used. More detailed comments and javadoc method comments
 could be used to make the code more readable and understandable. Not the least if the API grows.
-However, my aim has been to write the code in a way that should be easy to understand without more extensive comments.  
+However, my aim has been to write the code in a way that should be easy to understand without extensive comments.  
