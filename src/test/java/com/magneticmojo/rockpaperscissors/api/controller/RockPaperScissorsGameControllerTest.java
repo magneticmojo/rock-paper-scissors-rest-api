@@ -13,7 +13,6 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.PlayerTwoJoinedState;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.*;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.RockPaperScissorsGameService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * of the dependent classes and the MockMvc testing framework.
  * It covers all public API endpoints exposed by RockPaperScissorsGameController such as creating a new game, joining an existing game,
  * making a move in the game, and retrieving the current game state.
- * It tests various possible states of the game, ensuring the correctness of the controller
- * in different situations such as a game is full, a player making multiple moves, and a player who is not in the game.
  */
-
 @WebMvcTest(RockPaperScissorsGameController.class)
 public class RockPaperScissorsGameControllerTest {
 

@@ -1,5 +1,6 @@
 package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game;
 
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNullException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.PlayerMove;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
@@ -18,6 +19,9 @@ public class RockPaperScissorsGame {
     private final String gameId;
 
     public RockPaperScissorsGame(Player playerOne) {
+        if (playerOne == null) {
+            throw new PlayerNullException("Player cannot be null");
+        }
         this.gameState = new PlayerOneJoinedState(playerOne);
         this.gameId = UUID.randomUUID().toString();
     }
