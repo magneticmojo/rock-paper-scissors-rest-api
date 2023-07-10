@@ -10,19 +10,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-/** // TODO CHange
+/**
  * RockPaperScissorsGameExceptionHandler is a central place for handling exceptions across the whole application.
  * It is annotated with @ControllerAdvice to be able to assist multiple controllers.
  * <p>
- * This handler deals with various exceptions such as GameNotFoundException, MissingPlayerTwoException,
+ * This handler deals with various RockPaperScissorsGameException exceptions such as GameNotFoundException, MissingPlayerTwoException,
  * GameFullException, GameEndedException, PlayerNotInGameException, and MultipleMovesProhibitedException
  * by wrapping them in a ResponseEntity with a suitable HTTP status code and a custom GameExceptionResponse.
  * <p>
- * Additionally, it handles validation errors by overriding the handleMethodArgumentNotValid method
- * from ResponseEntityExceptionHandler. If there are validation errors, it generates a list of error messages
- * and wraps them in a RequestValidationErrorResponse.
+ * ValidationExceptions are handled by the RequestValidationExceptionHandler.
  */
-
 @ControllerAdvice(assignableTypes = {RockPaperScissorsGameController.class})
 public class RockPaperScissorsGameExceptionHandler extends ResponseEntityExceptionHandler {
 
