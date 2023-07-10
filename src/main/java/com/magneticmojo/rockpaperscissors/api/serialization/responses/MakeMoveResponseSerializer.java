@@ -7,6 +7,9 @@ import com.magneticmojo.rockpaperscissors.api.model.responses.gameresponses.Make
 
 import java.io.IOException;
 
+/**
+ * Serializer class for converting the MakeMoveResponse object to JSON format.
+ */
 public class MakeMoveResponseSerializer extends StdSerializer<MakeMoveResponse> {
 
     public MakeMoveResponseSerializer() {

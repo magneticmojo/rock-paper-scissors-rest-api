@@ -7,6 +7,9 @@ import com.magneticmojo.rockpaperscissors.api.model.responses.gameresponses.Crea
 
 import java.io.IOException;
 
+/**
+ * Serializer class for converting the CreateGameResponse object to JSON format.
+ */
 public class CreateGameResponseSerializer extends StdSerializer<CreateGameResponse> {
 
     protected CreateGameResponseSerializer() {
