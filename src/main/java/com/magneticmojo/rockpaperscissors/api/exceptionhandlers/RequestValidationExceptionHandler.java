@@ -14,6 +14,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This is a global exception handler class that is responsible for handling
+ * validation errors thrown by the application's RESTful API controller.
+ * It specifically handles `MethodArgumentNotValidException` exceptions,
+ * occurring when arguments annotated with validation constraints
+ * (Jakarta Bean Validation annotations) in controller methods violate
+ * those constraints.
+ *
+ * The handler method captures these validation errors, formats them
+ * into a structured `RequestValidationErrorResponse` and returns it in
+ * the HTTP response, ensuring that API clients receive comprehensible
+ * and uniform error messages.
+ *
+ * The class extends `ResponseEntityExceptionHandler` to inherit its
+ * methods for handling standard Spring MVC exceptions.
+ *
+ * <p> This handler is associated with the `RockPaperScissorsGameController` class
+ * but can be expanded to handle exceptions across multiple controllers.
+ */
+
 @ControllerAdvice(assignableTypes = {RockPaperScissorsGameController.class})
 public class RequestValidationExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -31,6 +51,4 @@ public class RequestValidationExceptionHandler extends ResponseEntityExceptionHa
         RequestValidationErrorResponse response = new RequestValidationErrorResponse(status.value(), errors);
         return new ResponseEntity<>(response, headers, status);
     }
-
-
 }
