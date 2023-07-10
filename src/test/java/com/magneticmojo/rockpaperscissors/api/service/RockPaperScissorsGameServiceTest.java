@@ -1,6 +1,8 @@
 package com.magneticmojo.rockpaperscissors.api.service;
 
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.RockPaperScissorsGameService;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerMoveNullException;
+import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.exceptions.PlayerNullException;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.model.entities.Player;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.RockPaperScissorsGame;
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states.RockPaperScissorsGameState;
@@ -35,8 +37,17 @@ public class RockPaperScissorsGameServiceTest {
     @InjectMocks
     private RockPaperScissorsGameService gameService;
 
-    private static final String TEST_GAME_ID = "d75bceed-c780-4f66-9a34-8da792db0976";
+    private final String gameId = "d75bceed-c780-4f66-9a34-8da792db0976";
     private Player playerOne = new Player("playerOne");
+    private Player playerTwo = new Player("playerTwo");
+    private PlayerMove playerMove = new PlayerMove(playerTwo, Move.PAPER);
+
+    private String gameNotFoundMessage = "Invalid id: ";
+    private String gameNotFoundError = "GAME_NOT_FOUND";
+    private String playerNullMessage = "Player cannot be null";
+    private String playerNullError = "PLAYER_NULL";
+    private String playerMoveNullMessage = "PlayerMove cannot be null";
+    private String playerMoveNullError = "PLAYER_MOVE_NULL";
 
     @BeforeEach
     void setUp() {
@@ -45,10 +56,6 @@ public class RockPaperScissorsGameServiceTest {
     }
 
     // ********************************************** CREATE GAME TESTS *************************************************
-
-    // TODO -> Add test for when game already exists
-    // TODO -> Add test for when game repository throws exception
-
 
     @Test
     void testCreateGame_returnsNonNullId_andCallsAddGame() {
@@ -60,7 +67,15 @@ public class RockPaperScissorsGameServiceTest {
         verify(gameRepository, times(1)).addGame(any(RockPaperScissorsGame.class));
     }
 
+    @Test
+    void testCreateGame_whenPlayerIsNull_thenThrowsPlayerNullException() {
+        PlayerNullException exception = assertThrows(PlayerNullException.class, () -> {
+            gameService.createGame(null);
+        });
 
+        assertEquals(playerNullMessage, exception.getMessage());
+        assertEquals(playerNullError, exception.getErrorCode());
+    }
 
     // ********************************************** GET GAME STATE TESTS **********************************************
 
@@ -71,10 +86,10 @@ public class RockPaperScissorsGameServiceTest {
         when(gameRepository.getGame(anyString())).thenReturn(mockGame);
         when(mockGame.getState()).thenReturn(mockState);
 
-        RockPaperScissorsGameState resultState = gameService.getGameState(TEST_GAME_ID);
+        RockPaperScissorsGameState resultState = gameService.getGameState(gameId);
 
         assertEquals(mockState, resultState);
-        verify(gameRepository, times(1)).getGame(TEST_GAME_ID);
+        verify(gameRepository, times(1)).getGame(gameId);
         verify(mockGame, times(1)).getState();
     }
 
@@ -83,11 +98,12 @@ public class RockPaperScissorsGameServiceTest {
     void testGetGameState_whenGameDoesNotExist_thenThrowsGameNotFoundException() {
         when(gameRepository.getGame(anyString())).thenReturn(null);
 
-        Exception exception = assertThrows(GameNotFoundException.class, () -> {
-            gameService.getGameState(TEST_GAME_ID);
+        GameNotFoundException exception = assertThrows(GameNotFoundException.class, () -> {
+            gameService.getGameState(gameId);
         });
 
-        assertEquals("Invalid id: " + TEST_GAME_ID, exception.getMessage());
+        assertEquals(gameNotFoundMessage + gameId, exception.getMessage());
+        assertEquals(gameNotFoundError, exception.getErrorCode());
     }
 
     // ********************************************** JOIN GAME TESTS ***************************************************
@@ -100,13 +116,13 @@ public class RockPaperScissorsGameServiceTest {
         when(gameRepository.getGame(anyString())).thenReturn(mockGame);
         when(mockGame.getState()).thenReturn(mockState);
 
-        gameService.joinGame(TEST_GAME_ID, mockPlayer);
+        gameService.joinGame(gameId, mockPlayer);
 
-        verify(gameRepository, times(1)).getGame(TEST_GAME_ID);
+        verify(gameRepository, times(1)).getGame(gameId);
         verify(mockGame, times(1)).joinGame(mockPlayer);
         verify(mockGame, times(1)).getState();
 
-        RockPaperScissorsGameState resultState = gameService.getGameState(TEST_GAME_ID);
+        RockPaperScissorsGameState resultState = gameService.getGameState(gameId);
         assertEquals(mockState, resultState);
     }
 
@@ -114,11 +130,21 @@ public class RockPaperScissorsGameServiceTest {
     void testJoinGame_whenGameDoesNotExist_thenThrowsGameNotFoundException() {
         when(gameRepository.getGame(anyString())).thenReturn(null);
 
-        Exception exception = assertThrows(GameNotFoundException.class, () -> {
-            gameService.joinGame(TEST_GAME_ID, new Player("somePlayer"));
+        GameNotFoundException exception = assertThrows(GameNotFoundException.class, () -> {
+            gameService.joinGame(gameId, playerOne);
         });
 
-        assertEquals("Invalid id: " + TEST_GAME_ID, exception.getMessage());
+        assertEquals(gameNotFoundMessage + gameId, exception.getMessage());
+        assertEquals(gameNotFoundError, exception.getErrorCode());
+    }
+
+    @Test
+    void testJoinGame_whenPlayerIsNull_thenThrowsPlayerNullException() {
+        PlayerNullException exception = assertThrows(PlayerNullException.class, () -> {
+            gameService.joinGame(gameId, null);
+        });
+
+        assertEquals(playerNullMessage, exception.getMessage());
     }
 
 
@@ -132,13 +158,13 @@ public class RockPaperScissorsGameServiceTest {
         when(gameRepository.getGame(anyString())).thenReturn(mockGame);
         when(mockGame.getState()).thenReturn(mockState);
 
-        gameService.makeMove(TEST_GAME_ID, mockMove);
+        gameService.makeMove(gameId, mockMove);
 
-        verify(gameRepository, times(1)).getGame(TEST_GAME_ID);
+        verify(gameRepository, times(1)).getGame(gameId);
         verify(mockGame, times(1)).makeMove(mockMove);
         verify(mockGame, times(1)).getState();
 
-        RockPaperScissorsGameState resultState = gameService.getGameState(TEST_GAME_ID);
+        RockPaperScissorsGameState resultState = gameService.getGameState(gameId);
         assertEquals(mockState, resultState);
     }
 
@@ -146,10 +172,21 @@ public class RockPaperScissorsGameServiceTest {
     void testMakeMove_whenGameDoesNotExist_thenThrowsGameNotFoundException() {
         when(gameRepository.getGame(anyString())).thenReturn(null);
 
-        Exception exception = assertThrows(GameNotFoundException.class, () -> {
-            gameService.makeMove(TEST_GAME_ID, new PlayerMove(new Player("somePlayer"), Move.PAPER));
+        GameNotFoundException exception = assertThrows(GameNotFoundException.class, () -> {
+            gameService.makeMove(gameId, playerMove);
         });
 
-        assertEquals("Invalid id: " + TEST_GAME_ID, exception.getMessage());
+        assertEquals(gameNotFoundMessage + gameId, exception.getMessage());
+        assertEquals(gameNotFoundError, exception.getErrorCode());
+    }
+
+    @Test
+    void testMakeMove_whenPlayerMoveIsNull_thenThrowsPlayerMoveNullException() {
+        PlayerMoveNullException exception = assertThrows(PlayerMoveNullException.class, () -> {
+            gameService.makeMove(gameId, null);
+        });
+
+        assertEquals(playerMoveNullMessage, exception.getMessage());
+        assertEquals(playerMoveNullError, exception.getErrorCode());
     }
 }

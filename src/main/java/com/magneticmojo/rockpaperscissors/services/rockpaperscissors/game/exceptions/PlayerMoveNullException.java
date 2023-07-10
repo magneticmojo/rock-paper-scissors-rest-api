@@ -8,6 +8,6 @@ public class PlayerMoveNullException extends RockPaperScissorsGameException {
 
     @Override
     public String getErrorCode() {
-        return null;
+        return "PLAYER_MOVE_NULL";
     }
 }

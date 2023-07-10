@@ -45,7 +45,7 @@ public class RockPaperScissorsGameService {
 
     public RockPaperScissorsGameState makeMove(String id, PlayerMove playerMove) {
         if (playerMove == null) {
-            throw new PlayerMoveNullException("Player move cannot be null");
+            throw new PlayerMoveNullException("PlayerMove cannot be null");
         }
         RockPaperScissorsGame rpsGame = getGameOrElseThrow(id);
         rpsGame.makeMove(playerMove);
