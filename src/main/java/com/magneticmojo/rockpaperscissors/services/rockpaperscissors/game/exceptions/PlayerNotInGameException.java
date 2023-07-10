@@ -2,7 +2,7 @@ package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.excep
 
 /**
  * Exception thrown when a player is not in the game.
- * Inherits from the PlayerException class.
+ * Inherits from the RockPaperScissorsGameException class.
  */
 public class PlayerNotInGameException extends RockPaperScissorsGameException {
 

@@ -2,7 +2,7 @@ package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.excep
 
 /**
  * Exception thrown when a game has already ended.
- * Inherits from the GameException class.
+ * Inherits from the RockPaperScissorsGameException class.
  */
 public class GameEndedException extends RockPaperScissorsGameException {
 

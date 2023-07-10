@@ -2,7 +2,7 @@ package com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.excep
 
 /**
  * Exception thrown when a player tries to do a second move.
- * Inherits from the PlayerException class.
+ * Inherits from the RockPaperScissorsGameException class.
  */
 public class MultipleMovesProhibitedException extends RockPaperScissorsGameException {
 
