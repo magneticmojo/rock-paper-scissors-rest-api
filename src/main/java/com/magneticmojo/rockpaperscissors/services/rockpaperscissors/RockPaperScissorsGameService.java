@@ -10,6 +10,11 @@ import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.game.states
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.repository.RockPaperScissorsGameRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for managing Rock-Paper-Scissors game instances.
+ * Provides operations such as creating a game, joining a game, making a move, and fetching the game state.
+ * Uses RockPaperScissorsGameRepository to persist and retrieve game instances.
+ */
 @Service
 public class RockPaperScissorsGameService {
 

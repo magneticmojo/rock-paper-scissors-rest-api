@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>
  * These tests validate the behavior of the GameEndedState class,
  * testing the handling of joining a game and making moves when the game has ended.
+ * Also, the tests validate the game result message.
  */
 public class GameEndedStateTest {
 

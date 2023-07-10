@@ -5,8 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * An in-memory implementation of the RockPaperScissorsGameRepository interface.
+ * Provides methods to add and retrieve games in a concurrent hash map.
+ */
 @Repository
-public class InMemoryRockPaperScissorsGameRepository implements RockPaperScissorsGameRepository{
+public class InMemoryRockPaperScissorsGameRepository implements RockPaperScissorsGameRepository {
 
     private final ConcurrentHashMap<String, RockPaperScissorsGame> gameMap = new ConcurrentHashMap<>();
 

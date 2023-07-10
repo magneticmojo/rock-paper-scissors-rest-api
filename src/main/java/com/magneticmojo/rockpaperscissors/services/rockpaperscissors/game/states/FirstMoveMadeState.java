@@ -11,7 +11,7 @@ import com.magneticmojo.rockpaperscissors.api.serialization.gamestates.FirstMove
 /**
  * The FirstMoveMadeState class represents the game state after the first player has made a move,
  * and the game is waiting for the second player's move. The class handles the game logic and checks for invalid operations.
- * Any further attempt to join the game or a duplicate move from the same player will result in an exception.
+ * Any further attempt to join the game, a player not in the game trying to make a move or player in the game trying to make a second move result in an exception.
  * The class implements the RockPaperScissorsGameState interface, thus representing a concrete state of the State Pattern.
  */
 @JsonSerialize(using = FirstMoveMadeStateSerializer.class)
