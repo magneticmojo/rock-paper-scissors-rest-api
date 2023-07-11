@@ -19,7 +19,7 @@ To run this project, you need to have:
 ## Building the Project
 Clone the repository:
 
-https://github.com/MagneticMojo/RockPapperScissors.git
+https://github.com/MagneticMojo/RockPaperScissorsRESTAPI.git
 
 Build the project with Maven:
 ```
