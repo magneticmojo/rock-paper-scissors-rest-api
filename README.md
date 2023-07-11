@@ -1,22 +1,22 @@
-##Rock Paper Scissors API
+## Rock Paper Scissors API
 The Rock Paper Scissors API is a RESTful API that provides a platform to play the 
 classic game of Rock, Paper, Scissors (https://en.wikipedia.org/wiki/Rock_paper_scissors).
 It is developed in Java 17 using Spring Boot 3.1.1 and Apache Maven 3.9.1 and designed to be a starting point 
 for a larger project accessible for other developers to continue working on, adding functionality, endpoints or other games. 
 
-####The project is separated in two main packages:
+#### The project is separated in two main packages:
 * api - The API module. It contains the RESTful API for the Rock-Paper-Scissors game.
 
 * services - The services package. It is intended to be extendable with more services in the future.
   * rockpaperscissors - The game package. It contains the service and other components of for the Rock Paper Scissors game.
 
-###Pre-requisites
+### Pre-requisites
 To run this project, you need to have:
 
 * Java 17 or higher installed (https://www.java.com/download/ie_manual.jsp)
 * Apache Maven 3.9.1 or higher installed (https://maven.apache.org/download.cgi)
 
-##Building the Project
+## Building the Project
 Clone the repository:
 
 https://github.com/MagneticMojo/RockPapperScissors.git
@@ -26,15 +26,15 @@ Build the project with Maven:
 mvn clean install
 ```
 
-##Running the Application
-###Running with Maven: 
+## Running the Application
+### Running with Maven: 
 You can start the application directly from Maven:
 
 ```
 mvn spring-boot:run
 ```
 
-###Running as a Standalone JAR
+### Running as a Standalone JAR
 You can package the application as a standalone JAR:
 ```
 mvn clean package
@@ -43,14 +43,14 @@ The JAR file will be located in the target directory. You can run the JAR file w
 ```
 java -jar target/RockPaperScissorsRESTAPI-0.0.1-SNAPSHOT.jar
 ```
-###Compatibility and Testing
+### Compatibility and Testing
 This project has been developed and tested on a MacBook Pro (14-inch, 2021) equipped with an Apple M1 Pro chip and 16GB of memory. 
 The operating system used is macOS 13.3.1. While the project should work fine on other systems that meet the prerequisites (Java 17 and Apache Maven), 
 it's worth noting that the testing so far has been performed on the aforementioned system. 
 As such, if you're using a different setup, your mileage may vary. Contributions to test and improve compatibility across different platforms are welcome.
 
 
-##API Usage
+## API Usage
 The API provides the following endpoints:
 
 ### /api/games 
@@ -62,7 +62,7 @@ Join a game (PATCH request).
 ### /api/games/{id}/move
 Make a move (PATCH request).
 
-##Example usage of the API:
+## Example usage of the API:
 ### Create a new game
 Endpoint: /api/games
 
@@ -223,7 +223,7 @@ Response (Successful: Http status 200 OK):
 ```
 ## Unsuccessful Requests:
 ### POST: /api/games
-#####Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
+##### Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
 ```
 {
     "HttpStatusCode": 400,
@@ -232,7 +232,7 @@ Response (Successful: Http status 200 OK):
     ]
 }
 ```
-####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+#### Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
 ```
 {
     "type": "about:blank",
@@ -243,7 +243,7 @@ Response (Successful: Http status 200 OK):
 }
 ```
 ### GET: /api/games/{id}
-#####Empty gameId in the URL will result in a 404 NOT FOUND response.
+##### Empty gameId in the URL will result in a 404 NOT FOUND response.
 ```
 {
     "timestamp": "2023-07-10T23:13:24.607+00:00",
@@ -261,7 +261,7 @@ Response (Successful: Http status 200 OK):
 ```
 
 ### PATCH: /api/games/{id}/join
-#####Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
+##### Empty, blank or null value of key "name" in the request body will result in a 40O BAD REQUEST response.
 ```
 {
     "HttpStatusCode": 400,
@@ -277,7 +277,7 @@ Response (Successful: Http status 200 OK):
 "errorMessage": "Invalid id: 1234"
 }
 ```
-####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+#### Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
 ```
 {
     "type": "about:blank",
@@ -302,7 +302,7 @@ Response (Successful: Http status 200 OK):
 }
 ```
 ### PATCH: /api/games/{id}/move
-#####Empty, blank or null value of keys values in the request body will result in a 40O BAD REQUEST response.
+##### Empty, blank or null value of keys values in the request body will result in a 40O BAD REQUEST response.
 ```
 {
     "HttpStatusCode": 400,
@@ -318,7 +318,7 @@ Response (Successful: Http status 200 OK):
 "errorMessage": "Invalid id: 1234"
 }
 ```
-####Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
+#### Invalid JSON format in the request body will result in a 40O BAD REQUEST response.
 ```
 {
 "type": "about:blank",
