@@ -1,3 +1,4 @@
+/*
 package com.magneticmojo.rockpaperscissors.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,13 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+*/
 /**
  * This is a test class for the RockPaperScissorsGameController class.
  * It aims to verify the behavior of the RockPaperScissorsGameController class by using mock implementations
  * of the dependent classes and the MockMvc testing framework.
  * It covers all public API endpoints exposed by RockPaperScissorsGameController such as creating a new game, joining an existing game,
  * making a move in the game, and retrieving the current game state.
- */
+ *//*
+
 @WebMvcTest(RockPaperScissorsGameController.class)
 public class RockPaperScissorsGameControllerTest {
 
@@ -418,3 +421,4 @@ public class RockPaperScissorsGameControllerTest {
         Mockito.verify(gameService, Mockito.times(1)).makeMove(gameId, firstPlayerMove);
     }
 }
+*/

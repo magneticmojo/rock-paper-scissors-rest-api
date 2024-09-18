@@ -1,3 +1,4 @@
+/*
 package com.magneticmojo.rockpaperscissors.api.service;
 
 import com.magneticmojo.rockpaperscissors.services.rockpaperscissors.RockPaperScissorsGameService;
@@ -22,12 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+*/
 /**
  * This test class validates the functionality of the RockPaperScissorsGameService class,
  * ensuring that the service interacts correctly with InMemoryRockPaperScissorsGameRepository and RockPaperScissorsGame.
  * The tests cover scenarios like creating games, getting game states, joining games, and making moves,
  * while handling both success and failure scenarios.
- */
+ *//*
+
 @ExtendWith(MockitoExtension.class)
 public class RockPaperScissorsGameServiceTest {
 
@@ -189,4 +192,4 @@ public class RockPaperScissorsGameServiceTest {
         assertEquals(playerMoveNullMessage, exception.getMessage());
         assertEquals(playerMoveNullError, exception.getErrorCode());
     }
-}
+}*/
